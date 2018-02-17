@@ -82,9 +82,14 @@ class Main(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Connect signals, menu
-        self.ui.actionCreateDatabase.triggered.connect(self.createDatabase)
+        # Connect signals, menu and toolbar
+        self.ui.actionNewDatabase.triggered.connect(self.newDatabase)
         self.ui.actionOpenDatabase.triggered.connect(self.openDatabaseMsgBox)
+        self.ui.actionAddFiles.triggered.connect(self.fAddFiles)
+        self.ui.actionAddFolder.triggered.connect(self.fAddFolder)
+        self.ui.actionRemoveFiles.triggered.connect(self.fRemoveFiles)
+        self.ui.actionClearList.triggered.connect(self.fClearList)
+        self.ui.actionStart.triggered.connect(self.fStart)
         self.ui.actionQuit.triggered.connect(self.quitApplication)
         self.ui.actionWiki.triggered.connect(self.wikiLink)
         self.ui.actionAbout.triggered.connect(self.aboutMessage)
@@ -125,8 +130,13 @@ class Main(QtGui.QMainWindow):
         # Icons
         self.setWindowIcon(QtGui.QIcon("icon.png"))
 
-        self.ui.actionCreateDatabase.setIcon(QtGui.QIcon("create_database.png"))
+        self.ui.actionNewDatabase.setIcon(QtGui.QIcon("new_database.png"))
         self.ui.actionOpenDatabase.setIcon(QtGui.QIcon("open_database.png"))
+        self.ui.actionAddFiles.setIcon(QtGui.QIcon("add_files.png"))
+        self.ui.actionAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
+        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
+        self.ui.actionClearList.setIcon(QtGui.QIcon("clear.png"))
+        self.ui.actionStart.setIcon(QtGui.QIcon("start.png"))
         self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
         self.ui.actionWiki.setIcon(QtGui.QIcon("url.png"))
         self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
@@ -161,11 +171,11 @@ class Main(QtGui.QMainWindow):
     #+ Actions
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-    # Menu > File > Create a new database...
-    def createDatabase(self):
+    # New database
+    def newDatabase(self):
 
         # Dialog for database name
-        name, ok = QtGui.QInputDialog.getText(self, "Create a new database", 
+        name, ok = QtGui.QInputDialog.getText(self, "New database", 
             "Enter name for database:")
 
         if not ok:
@@ -251,7 +261,7 @@ class Main(QtGui.QMainWindow):
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.1.0<br />
+        Version 1.1.1<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -695,22 +705,21 @@ class Main(QtGui.QMainWindow):
 
                 # Column 1 is the selected column
                 if column == 1:
-                    item = QtGui.QTableWidgetItem("Y/n")
-                    item.setFlags(QtCore.Qt.ItemIsUserCheckable |
-                        QtCore.Qt.ItemIsEnabled)
+                    item = QtGui.QCheckBox("Y/n")
                     if row[column]:
                         item.setCheckState(QtCore.Qt.Checked)
                     else:
                         item.setCheckState(QtCore.Qt.Unchecked)
+                    self.ui.tblLLists.setCellWidget(i, column, item)
                 else:
                     text = str(row[column])
                     item = QtGui.QTableWidgetItem(text)
 
-                # ID column can't have any item flags
-                if column == 0:
-                    item.setFlags(QtCore.Qt.NoItemFlags)
+                    # ID column can't have any item flags
+                    if column == 0:
+                        item.setFlags(QtCore.Qt.NoItemFlags)
 
-                self.ui.tblLLists.setItem(i, column, item)
+                    self.ui.tblLLists.setItem(i, column, item)
 
         # Set horizontal header visibility to true (QT BUG?)
         self.ui.tblLLists.horizontalHeader().setVisible(True)
@@ -817,7 +826,7 @@ class Main(QtGui.QMainWindow):
 
         # Get values
         id = int(self.ui.tblLLists.item(row, 0).text())
-        selected = int(self.ui.tblLLists.item(row, 1).checkState())
+        selected = int(self.ui.tblLLists.cellWidget(row, 1).checkState())
         if selected > 1: selected = 1 # Tristate checkbox into 1
         name = str(self.ui.tblLLists.item(row, 2).text())
         comment = str(self.ui.tblLLists.item(row, 3).text())
@@ -910,7 +919,6 @@ class Main(QtGui.QMainWindow):
 
                 self.ui.tblCCorrections.setItem(i, column, item)
 
-
         # Set horizontal header visibility to true (QT BUG?)
         self.ui.tblCCorrections.horizontalHeader().setVisible(True)
 
@@ -955,13 +963,13 @@ class Main(QtGui.QMainWindow):
         self.ui.tblCCorrections.setCellWidget(row, 2, item)
 
         # Variations
-        item = QtGui.QTableWidgetItem("Y/n")
-        item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+        self.ui.tblCCorrections.setItem(row, 3, QtGui.QTableWidgetItem())
+        item = QtGui.QCheckBox("Y/n")
         if int(rowdata[3]):
             item.setCheckState(QtCore.Qt.Checked)
         else:
-            item.setCheckState(QtCore.Qt.Unchecked)
-        self.ui.tblCCorrections.setItem(row, 3, item)
+            item.setCheckState(QtCore.Qt.Unchecked) 
+        self.ui.tblCCorrections.setCellWidget(row, 3, item)
 
         # Reset old row
         if row != row2 and row2 > -1:
@@ -989,6 +997,7 @@ class Main(QtGui.QMainWindow):
                 QtGui.QTableWidgetItem(listtext))
 
             # Variations
+            self.ui.tblCCorrections.removeCellWidget(row2, 3)
             if int(rowdata[3]):
                 text = "Yes"
             else:
@@ -1111,9 +1120,11 @@ class Main(QtGui.QMainWindow):
         listdata = self.data.get_list(index=sel)
         listid = int(listdata[0])
 
-        # Variations, error, correction and comment
-        variations = int(self.ui.tblCCorrections.item(row, 3).checkState())
-        if variations > 1: variations = 1 # Tristate checkbox into 1
+        # Variations
+        varia = int(self.ui.tblCCorrections.cellWidget(row, 3).checkState())
+        if varia > 1: varia = 1 # Tristate checkbox into 1
+
+        # Error, correction and comment
         error = str(self.ui.tblCCorrections.item(row, 4).text())
         correction = str(self.ui.tblCCorrections.item(row, 5).text())
         comment = str(self.ui.tblCCorrections.item(row, 6).text())
@@ -1137,8 +1148,8 @@ class Main(QtGui.QMainWindow):
                 return
 
         # Update correction
-        ok = self.data.update("corrections", [id, modeid, listid, variations, \
-            error, correction, comment])
+        ok = self.data.update("corrections", [id, modeid, listid, varia, error,\
+            correction, comment])
         if ok:
             msg = "Correction updated."
             self.ui.statusBar.showMessage(msg)
@@ -1149,6 +1160,9 @@ class Main(QtGui.QMainWindow):
 
     # Disable fix widgets
     def disableFixWidgets(self):
+        self.ui.actionRemoveFiles.setEnabled(False)
+        self.ui.actionClearList.setEnabled(False)
+        self.ui.actionStart.setEnabled(False)
         self.ui.btnFRemoveFiles.setEnabled(False)
         self.ui.btnFClearList.setEnabled(False)
         self.ui.btnFStart.setEnabled(False)
@@ -1156,6 +1170,9 @@ class Main(QtGui.QMainWindow):
 
     # Enable fix widgets
     def enableFixWidgets(self):
+        self.ui.actionRemoveFiles.setEnabled(True)
+        self.ui.actionClearList.setEnabled(True)
+        self.ui.actionStart.setEnabled(True)
         self.ui.btnFRemoveFiles.setEnabled(True)
         self.ui.btnFClearList.setEnabled(True)
         if self.data.database:

@@ -5,6 +5,7 @@
 
 # Python imports
 import re # Regular expression operations
+import sys # System-specific parameters and functions
 
 # A class to perform string operations
 class StringHandler(object):
@@ -42,7 +43,7 @@ class StringHandler(object):
             # RegEx
             if mode == 1: # RegEx
                 s, c = re.subn(old, new, s)
-                #self.count += c
+                self.count += c
                 return True, s
 
             # Normal replace

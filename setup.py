@@ -37,7 +37,7 @@ setup(
     author = 'bulkware',
     description = "An application to correct spelling errors from files.",
     name = "bwReplacer",
-    version = "1.1.0",
+    version = "1.1.1",
     options = dict(build_exe = buildOptions),
     executables = [exe]
 )

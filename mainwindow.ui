@@ -180,7 +180,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="hspcrF1">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -202,52 +202,10 @@
        <attribute name="title">
         <string>Lists</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QTableWidget" name="tblLLists">
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <spacer name="vspcrL1">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnLInsertRow">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Insert row</string>
-            </property>
-           </widget>
-          </item>
-          <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="1">
            <widget class="QPushButton" name="btnLDeleteRow">
             <property name="enabled">
              <bool>false</bool>
@@ -263,7 +221,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="2">
            <widget class="QPushButton" name="btnLUpdateRow">
             <property name="enabled">
              <bool>false</bool>
@@ -279,6 +237,48 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnLInsertRow">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Insert row</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <spacer name="hspcrL1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="4">
+           <widget class="QTableWidget" name="tblLLists">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -287,26 +287,64 @@
        <attribute name="title">
         <string>Corrections</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QTableWidget" name="tblCCorrections">
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="3" column="0">
+           <widget class="QPushButton" name="btnCInsertRow">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Insert row</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="lblCList">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="locale">
+             <locale language="English" country="UnitedStates"/>
+            </property>
+            <property name="text">
+             <string>List</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="cboCList">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="locale">
+             <locale language="English" country="UnitedStates"/>
+            </property>
+            <property name="editable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
            <widget class="QLabel" name="lblCorrectionsSelectMode">
             <property name="minimumSize">
              <size>
@@ -328,7 +366,7 @@
             </property>
            </widget>
           </item>
-          <item>
+          <item row="1" column="0">
            <widget class="QComboBox" name="cboCCorrectionMode">
             <property name="minimumSize">
              <size>
@@ -356,75 +394,8 @@
             </item>
            </widget>
           </item>
-          <item>
-           <spacer name="vspcrC1">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>10</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="lblCList">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="locale">
-             <locale language="English" country="UnitedStates"/>
-            </property>
-            <property name="text">
-             <string>List</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cboCList">
-            <property name="minimumSize">
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="locale">
-             <locale language="English" country="UnitedStates"/>
-            </property>
-            <property name="editable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="vspcrC2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnCInsertRow">
+          <item row="3" column="2">
+           <widget class="QPushButton" name="btnCUpdateRow">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -435,11 +406,11 @@
              </size>
             </property>
             <property name="text">
-             <string>Insert row</string>
+             <string>Update row</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="3" column="1">
            <widget class="QPushButton" name="btnCDeleteRow">
             <property name="enabled">
              <bool>false</bool>
@@ -455,21 +426,47 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="btnCUpdateRow">
-            <property name="enabled">
-             <bool>false</bool>
+          <item row="3" column="3">
+           <spacer name="hspcrC2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="minimumSize">
+            <property name="sizeHint" stdset="0">
              <size>
-              <width>150</width>
-              <height>0</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
-            <property name="text">
-             <string>Update row</string>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="4">
+           <widget class="QTableWidget" name="tblCCorrections">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
             </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="horizontalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
            </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <spacer name="hspcrC1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
@@ -566,7 +563,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionCreateDatabase"/>
+    <addaction name="actionNewDatabase"/>
     <addaction name="actionOpenDatabase"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -578,15 +575,22 @@
     <addaction name="actionWiki"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuFix">
+    <property name="title">
+     <string>Fix</string>
+    </property>
+    <addaction name="actionAddFiles"/>
+    <addaction name="actionAddFolder"/>
+    <addaction name="actionRemoveFiles"/>
+    <addaction name="actionClearList"/>
+    <addaction name="separator"/>
+    <addaction name="actionStart"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuFix"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionOpen_file">
-   <property name="text">
-    <string>Open file...</string>
-   </property>
-  </action>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
@@ -602,39 +606,87 @@
     <string>Wiki (online)</string>
    </property>
   </action>
-  <action name="actionOpen_files">
-   <property name="text">
-    <string>Open files...</string>
-   </property>
-  </action>
-  <action name="actionAdd_new_dictionary_type">
-   <property name="text">
-    <string>Add new dictionary type...</string>
-   </property>
-  </action>
-  <action name="actionAdd_new_correction_type">
-   <property name="text">
-    <string>Add new correction type...</string>
-   </property>
-  </action>
   <action name="actionOpenDatabase">
    <property name="text">
-    <string>Open database...</string>
+    <string>Open database</string>
    </property>
   </action>
-  <action name="actionCreateDatabase">
+  <action name="actionNewDatabase">
    <property name="text">
-    <string>Create a new database...</string>
+    <string>New database</string>
+   </property>
+   <property name="toolTip">
+    <string>New database</string>
    </property>
   </action>
-  <action name="actionAddNewCorrectionType">
+  <action name="actionAddFiles">
    <property name="text">
-    <string>Add new correction type...</string>
+    <string>Add files</string>
+   </property>
+   <property name="toolTip">
+    <string>Add files</string>
+   </property>
+  </action>
+  <action name="actionAddFolder">
+   <property name="text">
+    <string>Add folder</string>
+   </property>
+   <property name="toolTip">
+    <string>Add folder</string>
+   </property>
+  </action>
+  <action name="actionRemoveFiles">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Remove files</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove files</string>
+   </property>
+  </action>
+  <action name="actionClearList">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Clear list</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear list</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Start</string>
+   </property>
+   <property name="toolTip">
+    <string>Start</string>
    </property>
   </action>
  </widget>
  <tabstops>
   <tabstop>tabMain</tabstop>
+  <tabstop>tblFFileList</tabstop>
+  <tabstop>lstFLists</tabstop>
+  <tabstop>btnFAddFiles</tabstop>
+  <tabstop>btnFAddFolder</tabstop>
+  <tabstop>btnFRemoveFiles</tabstop>
+  <tabstop>btnFClearList</tabstop>
+  <tabstop>btnFStart</tabstop>
+  <tabstop>tblLLists</tabstop>
+  <tabstop>cboCCorrectionMode</tabstop>
+  <tabstop>cboCList</tabstop>
+  <tabstop>tblCCorrections</tabstop>
+  <tabstop>btnCInsertRow</tabstop>
+  <tabstop>btnCDeleteRow</tabstop>
+  <tabstop>btnCUpdateRow</tabstop>
+  <tabstop>cboSFileEncoding</tabstop>
+  <tabstop>chkSRemoveEmpty</tabstop>
  </tabstops>
  <resources/>
  <connections/>
