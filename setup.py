@@ -26,7 +26,7 @@ setup (
     author = 'bulkware',
     description = "An application to correct spelling errors from files.",
     name = "bwReplacer",
-    version = "1.00",
+    version = "1.01",
     executables = [eggsacutibull],
     options = {"build_exe": {"includes":includes}}
 )

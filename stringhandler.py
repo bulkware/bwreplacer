@@ -17,7 +17,7 @@ class StringHandler(object):
         self.error = "" # String for errors
 
 
-    # Replace 
+    # Replace
     def replace(self, s, mode, old, new, variations=False):
 
         self.error = ""
@@ -105,3 +105,20 @@ class StringHandler(object):
     def reset(self):
         self.count = 0
         self.error = ""
+
+
+    # Test
+    def test(self, old, new):
+
+        self.error = ""
+
+        try:
+            re.subn(old, new, "foo")
+        except re.error as e:
+            self.error = "Regular expression error: " + str(e)
+            return False
+        except:
+            self.error = "Unexpected error: " + str(sys.exc_info()[1])
+            return False
+        else:
+            return True

@@ -2,7 +2,7 @@
 Name "bwReplacer"
 
 ; The file to write
-OutFile "installers\bwReplacer_100_installer_win32.exe"
+OutFile "installers\bwReplacer_101_installer_win32.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES\bwReplacer"

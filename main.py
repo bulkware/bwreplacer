@@ -246,14 +246,14 @@ class Main(QtGui.QMainWindow):
 
     # Menu > Help > Wiki
     def wikiLink(self):
-        address = "http://sourceforge.net/projects/bwreplacer/wiki"
+        address = "http://sourceforge.net/p/bwreplacer/wiki/"
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(address))
 
 
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.00<br />
+        Version 1.01<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -1033,6 +1033,12 @@ class Main(QtGui.QMainWindow):
             msg = "Error and correction cannot be the same."
             QtGui.QMessageBox.critical(self, "Error", msg)
             return
+
+        # If mode is RegEx, check for validity
+        if modeid == 1:
+            if not self.string.test(str(error), str(correction)):
+                QtGui.QMessageBox.critical(self, "Error", self.string.error)
+                return
 
         # Update correction
         ok = self.data.update("corrections", [id, modeid, listid, variations, \

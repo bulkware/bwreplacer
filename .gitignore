@@ -2,6 +2,7 @@
 .git
 __pycache__
 build
+databases
 icons
 installer
 versions
