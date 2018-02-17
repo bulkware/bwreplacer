@@ -187,9 +187,6 @@ class Main(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error", msg)
             return
 
-        # Disable widgets
-        self.disableWidgets()
-
         try:
             self.data.create_database(name)
             self.refreshLists()
@@ -204,8 +201,8 @@ class Main(QtGui.QMainWindow):
             msg = "Database created: " + self.data.database
             self.ui.statusBar.showMessage(msg)
 
-        # Enable widgets
-        self.enableWidgets()
+        # Enable/disable widgets
+        self.enabledisableWidgets()
 
 
     # Menu > File > Open database... (using message box)
@@ -225,9 +222,6 @@ class Main(QtGui.QMainWindow):
     # Open database
     def openDatabase(self, fp):
 
-        # Disable widgets
-        self.disableWidgets()
-
         # Try to open database
         if not self.data.open(fp):
             self.ui.statusBar.showMessage(self.data.error)
@@ -239,8 +233,8 @@ class Main(QtGui.QMainWindow):
         self.refreshCCorrections()
         self.refreshLLists()
 
-        # Enable widgets
-        self.enableWidgets()
+        # Enable/disable widgets
+        self.enabledisableWidgets()
 
         # Show success msg
         msg = "Successfully opened database: " + fp
@@ -261,7 +255,7 @@ class Main(QtGui.QMainWindow):
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.1.1<br />
+        Version 1.1.2<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -350,12 +344,12 @@ class Main(QtGui.QMainWindow):
             # Add file
             self.filelist.append(item)
 
-        # Check for files, sort them, enable widgets
+        # Check for files and sort them
         if len(self.filelist) > 0:
             self.filelist.sort()
-            self.enableFixWidgets()
-        else:
-            self.disableFixWidgets()
+
+        # Enable/disable widgets
+        self.enabledisableWidgets()
 
         # Refresh file list table
         self.refreshFileList()
@@ -378,7 +372,7 @@ class Main(QtGui.QMainWindow):
     # Fix, clear list
     def fClearList(self):
         self.filelist[:] = []
-        self.disableFixWidgets()
+        self.enabledisableWidgets()
         self.refreshFileList()
 
 
@@ -410,7 +404,7 @@ class Main(QtGui.QMainWindow):
 
         # Check file list for files
         if len(self.filelist) < 1:
-            self.disableFixWidgets()
+            self.enabledisableWidgets()
 
         # Refresh table
         self.refreshFileList()
@@ -448,8 +442,8 @@ class Main(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error", msg)
             return False
 
-        # Disable widgets
-        self.disableWidgets()
+        # Enable/disable widgets
+        self.enabledisableWidgets(disable=True)
 
         # Loop file list
         self.string.reset()
@@ -468,8 +462,8 @@ class Main(QtGui.QMainWindow):
                 (self.string.count)
             self.ui.statusBar.showMessage(msg)
 
-        # Enable widgets
-        self.enableWidgets()
+        # Enable/disable widgets
+        self.enabledisableWidgets()
 
 
     # Fix file
@@ -499,13 +493,12 @@ class Main(QtGui.QMainWindow):
             # Set corrected line back to file
             self.file.set_line(key, line)
 
-            if i % 100 == 0:
-                msg = "Processing file: %s (line %s/%s)" \
-                    % (os.path.basename(file), key, lines)
-                self.ui.statusBar.showMessage(msg)
+            msg = "Processing file: %s (line %s/%s)" \
+                % (os.path.basename(file), key, lines)
+            self.ui.statusBar.showMessage(msg)
 
-                # Update app
-                QtGui.QApplication.processEvents()
+            # Update app
+            QtGui.QApplication.processEvents()
 
             i += 1
 
@@ -1158,45 +1151,60 @@ class Main(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error", self.data.error)
 
 
-    # Disable fix widgets
-    def disableFixWidgets(self):
-        self.ui.actionRemoveFiles.setEnabled(False)
-        self.ui.actionClearList.setEnabled(False)
-        self.ui.actionStart.setEnabled(False)
-        self.ui.btnFRemoveFiles.setEnabled(False)
-        self.ui.btnFClearList.setEnabled(False)
-        self.ui.btnFStart.setEnabled(False)
+    # Enable/disable widgets
+    def enabledisableWidgets(self, disable=False):
 
+        # If disable is True, we disable everything
+        if disable:
+            self.ui.actionRemoveFiles.setEnabled(False)
+            self.ui.actionClearList.setEnabled(False)
+            self.ui.actionStart.setEnabled(False)
+            self.ui.btnFRemoveFiles.setEnabled(False)
+            self.ui.btnFClearList.setEnabled(False)
+            self.ui.btnFStart.setEnabled(False)
+            self.ui.btnLDeleteRow.setEnabled(False)
+            self.ui.btnLInsertRow.setEnabled(False)
+            self.ui.btnLUpdateRow.setEnabled(False)
+            self.ui.btnCDeleteRow.setEnabled(False)
+            self.ui.btnCInsertRow.setEnabled(False)
+            self.ui.btnCUpdateRow.setEnabled(False)
+            return
 
-    # Enable fix widgets
-    def enableFixWidgets(self):
-        self.ui.actionRemoveFiles.setEnabled(True)
-        self.ui.actionClearList.setEnabled(True)
-        self.ui.actionStart.setEnabled(True)
-        self.ui.btnFRemoveFiles.setEnabled(True)
-        self.ui.btnFClearList.setEnabled(True)
+        # Fix buttons
+        if len(self.filelist) > 0:
+            self.ui.actionRemoveFiles.setEnabled(True)
+            self.ui.actionClearList.setEnabled(True)
+            self.ui.actionStart.setEnabled(True)
+            self.ui.btnFRemoveFiles.setEnabled(True)
+            self.ui.btnFClearList.setEnabled(True)
+        else:
+            self.ui.actionRemoveFiles.setEnabled(False)
+            self.ui.actionClearList.setEnabled(False)
+            self.ui.actionStart.setEnabled(False)
+            self.ui.btnFRemoveFiles.setEnabled(False)
+            self.ui.btnFClearList.setEnabled(False)
+
+        # Lists and corrections buttons
         if self.data.database:
+            self.ui.btnLDeleteRow.setEnabled(True)
+            self.ui.btnLInsertRow.setEnabled(True)
+            self.ui.btnLUpdateRow.setEnabled(True)
+            self.ui.btnCDeleteRow.setEnabled(True)
+            self.ui.btnCInsertRow.setEnabled(True)
+            self.ui.btnCUpdateRow.setEnabled(True)
+        else:
+            self.ui.btnLDeleteRow.setEnabled(False)
+            self.ui.btnLInsertRow.setEnabled(False)
+            self.ui.btnLUpdateRow.setEnabled(False)
+            self.ui.btnCDeleteRow.setEnabled(False)
+            self.ui.btnCInsertRow.setEnabled(False)
+            self.ui.btnCUpdateRow.setEnabled(False)
+
+        # Start-button
+        if self.data.database and len(self.filelist) > 0:
             self.ui.btnFStart.setEnabled(True)
-
-
-    # Disable widgets
-    def disableWidgets(self):
-        self.ui.btnLDeleteRow.setEnabled(False)
-        self.ui.btnLInsertRow.setEnabled(False)
-        self.ui.btnLUpdateRow.setEnabled(False)
-        self.ui.btnCDeleteRow.setEnabled(False)
-        self.ui.btnCInsertRow.setEnabled(False)
-        self.ui.btnCUpdateRow.setEnabled(False)
-
-
-    # Enable widgets
-    def enableWidgets(self):
-        self.ui.btnLDeleteRow.setEnabled(True)
-        self.ui.btnLInsertRow.setEnabled(True)
-        self.ui.btnLUpdateRow.setEnabled(True)
-        self.ui.btnCDeleteRow.setEnabled(True)
-        self.ui.btnCInsertRow.setEnabled(True)
-        self.ui.btnCUpdateRow.setEnabled(True)
+        else:
+            self.ui.btnFStart.setEnabled(False)
 
 
 # Creates an application object and begins the event handling loop
