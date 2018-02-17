@@ -1,0 +1,5 @@
+bwReplacer - What's New?
+------------------------
+
+Version 1.00
+- Initial version.
