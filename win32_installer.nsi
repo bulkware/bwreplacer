@@ -2,7 +2,7 @@
 Name "bwReplacer"
 
 ; The file to write
-OutFile "installers\bwReplacer_101_installer_win32.exe"
+OutFile "installers\bwreplacer_1.1.0_installer_win32.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES\bwReplacer"
@@ -35,7 +35,7 @@ Section "bwReplacer (required)"
     SetOutPath $INSTDIR
 
     ; Put application files there
-    File "build\exe.win32-3.3\*.*"
+    File "build\*.*"
 
     ; Write the installation path into the registry
     WriteRegStr HKLM "SOFTWARE\bwReplacer" "Install_Dir" "$INSTDIR"

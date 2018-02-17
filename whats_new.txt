@@ -1,0 +1,26 @@
+bwReplacer - What's New?
+------------------------
+
+Version 1.1.0
+- Drag & drop files to fix.
+- File list table with more versatile options.
+- File size(s) in file list table.
+- Fix-tab was removed and batch fix is now fix.
+- Fixed a bug when deleting a list.
+- Fixed a bug when opening database from settings.
+- Icons for actions, buttons, tabs, etc.
+- New style PyQt signals.
+- Updated english-tv database.
+- Updated finnish-tv database.
+- UTF-8 --> UTF-8 with BOM.
+- Version numbering changed.
+- Window geometry is now saved.
+
+Version 1.01
+- Fixed the wiki link.
+- RegEx testing before updating correction with mode 1.
+- Updated english-tv database.
+- Updated finnish-tv database.
+
+Version 1.00
+- Initial version.

@@ -25,23 +25,23 @@ class DataHandler(object):
 
         # Check file path
         if not filepath:
-            self.error = "Database file path is not valid."
+            self.error = "Unable to open database. File path is not valid."
             return False
 
         # Check if file path is empty
         if filepath == "":
-            self.error = "Database file path is empty."
+            self.error = "Unable to open database. File path is empty."
             return False
 
         # File path should be an existing regular file
         if not os.path.isfile(filepath):
-            self.error = "Database file path is not a file."
+            self.error = "Unable to open database. File path is not a file."
             return False
 
         # Check file extension
         ext = os.path.splitext(filepath)[1][1:].lower()
         if ext != "db":
-            self.error = "Database file extension is not valid."
+            self.error = "Unable to open database. File extension is not valid."
             return False
 
         # Fetch appinfo

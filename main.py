@@ -16,6 +16,9 @@ from datahandler import DataHandler # A class for easier data access
 from filehandler import FileHandler # A class to handle files
 from stringhandler import StringHandler # A class to perform string operations
 
+# Application functions
+import functions # Useful functions
+
 # Import mainwindow
 from mainwindow import *
 
@@ -24,9 +27,6 @@ class Main(QtGui.QMainWindow):
 
     # Initialize mainwindow
     def __init__(self):
-
-        # Initialize top level window widget
-        QtGui.QMainWindow.__init__(self)
 
         # Declare class variables
         self.encodings = [
@@ -47,7 +47,7 @@ class Main(QtGui.QMainWindow):
             ["ISO-8859-15", "iso8859_15"],
             ["KOI8-R", "koi8_r"],
             ["KOI8-U", "koi8_u"],
-            ["UTF-8", "utf_8_sig"],
+            ["UTF-8 with BOM", "utf_8_sig"],
             ["UTF-8 without BOM", "utf_8"],
             ["UTF-16BE", "utf_16_be"],
             ["UTF-16LE", "utf_16_le"],
@@ -63,9 +63,8 @@ class Main(QtGui.QMainWindow):
             ["Windows-1257", "cp1257"],
             ["Windows-1258", "cp1258"]
         ]
-        self.dirpath = "" # Directory path for batch fix
-        self.filepath = "" # File path for fix
-        self.filelist = [] # File list for batch fix
+        self.path = "" # Path for fix
+        self.filelist = [] # File list for fix
         self.filetypes = ["srt", "txt"] # Accepted file types
         self.typefilter = "All supported files (*.srt *.txt)"
         self.typefilter += ";;SubRip subtitle file (*.srt)"
@@ -76,57 +75,45 @@ class Main(QtGui.QMainWindow):
         self.file = FileHandler(self.filetypes)
         self.string = StringHandler()
 
+        # Initialize top level window widget
+        QtGui.QMainWindow.__init__(self)
+
         # This is always the same
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         # Connect signals, menu
-        QtCore.QObject.connect(self.ui.actionCreateDatabase,
-            QtCore.SIGNAL('triggered()'), self.createDatabase)
-        QtCore.QObject.connect(self.ui.actionOpenDatabase,
-            QtCore.SIGNAL('triggered()'), self.openDatabase)
-        QtCore.QObject.connect(self.ui.actionQuit,
-            QtCore.SIGNAL('triggered()'), self.quitApplication)
-        QtCore.QObject.connect(self.ui.actionWiki,
-            QtCore.SIGNAL('triggered()'), self.wikiLink)
-        QtCore.QObject.connect(self.ui.actionAbout,
-            QtCore.SIGNAL('triggered()'), self.aboutMessage)
+        self.ui.actionCreateDatabase.triggered.connect(self.createDatabase)
+        self.ui.actionOpenDatabase.triggered.connect(self.openDatabaseMsgBox)
+        self.ui.actionQuit.triggered.connect(self.quitApplication)
+        self.ui.actionWiki.triggered.connect(self.wikiLink)
+        self.ui.actionAbout.triggered.connect(self.aboutMessage)
 
         # Connect signals, buttons
-        QtCore.QObject.connect(self.ui.btnFOpenFile,
-            QtCore.SIGNAL('clicked()'), self.fOpenFile)
-        QtCore.QObject.connect(self.ui.btnFStart,
-            QtCore.SIGNAL('clicked()'), self.fStart)
-
-        QtCore.QObject.connect(self.ui.btnBFStart,
-            QtCore.SIGNAL('clicked()'), self.bfStart)
-        QtCore.QObject.connect(self.ui.btnBFOpenDir,
-            QtCore.SIGNAL('clicked()'), self.bfOpenDir)
-
-        QtCore.QObject.connect(self.ui.btnLDeleteRow,
-            QtCore.SIGNAL('clicked()'), self.lDeleteRow)
-        QtCore.QObject.connect(self.ui.btnLInsertRow,
-            QtCore.SIGNAL('clicked()'), self.lInsertRow)
-        QtCore.QObject.connect(self.ui.btnLUpdateRow,
-            QtCore.SIGNAL('clicked()'), self.lUpdateRow)
-
-        QtCore.QObject.connect(self.ui.btnCDeleteRow,
-            QtCore.SIGNAL('clicked()'), self.cDeleteRow)
-        QtCore.QObject.connect(self.ui.btnCInsertRow,
-            QtCore.SIGNAL('clicked()'), self.cInsertRow)
-        QtCore.QObject.connect(self.ui.btnCUpdateRow,
-            QtCore.SIGNAL('clicked()'), self.cUpdateRow)
+        self.ui.btnFStart.clicked.connect(self.fStart)
+        self.ui.btnFAddFiles.clicked.connect(self.fAddFiles)
+        self.ui.btnFAddFolder.clicked.connect(self.fAddFolder)
+        self.ui.btnFRemoveFiles.clicked.connect(self.fRemoveFiles)
+        self.ui.btnFClearList.clicked.connect(self.fClearList)
+        self.ui.btnLDeleteRow.clicked.connect(self.lDeleteRow)
+        self.ui.btnLInsertRow.clicked.connect(self.lInsertRow)
+        self.ui.btnLUpdateRow.clicked.connect(self.lUpdateRow)
+        self.ui.btnCDeleteRow.clicked.connect(self.cDeleteRow)
+        self.ui.btnCInsertRow.clicked.connect(self.cInsertRow)
+        self.ui.btnCUpdateRow.clicked.connect(self.cUpdateRow)
 
         # Connect signals, comboboxes
-        QtCore.QObject.connect(self.ui.cboCCorrectionMode,
-            QtCore.SIGNAL('activated(QString)'), self.refreshCCorrections)
-        QtCore.QObject.connect(self.ui.cboCList,
-            QtCore.SIGNAL('activated(QString)'), self.refreshCCorrections)
+        self.ui.cboCCorrectionMode.activated.connect(self.refreshCCorrections)
+        self.ui.cboCList.activated.connect(self.refreshCCorrections)
 
         # Connect signals, tables
-        QtCore.QObject.connect(self.ui.tblCCorrections,
-            QtCore.SIGNAL('currentCellChanged(int,int,int,int)'),
+        self.ui.tblCCorrections.currentCellChanged[(int,int,int,int)].connect(\
             self.selectCorrection)
+
+        # Drag-and-drop events for file list
+        self.ui.tblFFileList.dragEnterEvent = self.dragEnterEvent
+        self.ui.tblFFileList.dragMoveEvent = self.dragEnterEvent
+        self.ui.tblFFileList.dropEvent = self.dropEvent
 
         # Loop and set encodings to settings combobox
         for item in self.encodings:
@@ -135,44 +122,44 @@ class Main(QtGui.QMainWindow):
         # Select the first tab from the tab widgets
         self.ui.tabMain.setCurrentIndex(0)
 
+        # Icons
+        self.setWindowIcon(QtGui.QIcon("icon.png"))
+
+        self.ui.actionCreateDatabase.setIcon(QtGui.QIcon("create_database.png"))
+        self.ui.actionOpenDatabase.setIcon(QtGui.QIcon("open_database.png"))
+        self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
+        self.ui.actionWiki.setIcon(QtGui.QIcon("url.png"))
+        self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
+
+        self.ui.tabMain.setTabIcon(0, QtGui.QIcon("fix.png"))
+        self.ui.tabMain.setTabIcon(1, QtGui.QIcon("lists.png"))
+        self.ui.tabMain.setTabIcon(2, QtGui.QIcon("corrections.png"))
+        self.ui.tabMain.setTabIcon(3, QtGui.QIcon("settings.png"))
+
+        self.ui.btnFAddFiles.setIcon(QtGui.QIcon("add_files.png"))
+        self.ui.btnFAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
+        self.ui.btnFRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
+        self.ui.btnFClearList.setIcon(QtGui.QIcon("clear.png"))
+        self.ui.btnFStart.setIcon(QtGui.QIcon("start.png"))
+
+        self.ui.btnLDeleteRow.setIcon(QtGui.QIcon("delete_row.png"))
+        self.ui.btnLInsertRow.setIcon(QtGui.QIcon("insert_row.png"))
+        self.ui.btnLUpdateRow.setIcon(QtGui.QIcon("update_row.png"))
+        self.ui.btnCDeleteRow.setIcon(QtGui.QIcon("delete_row.png"))
+        self.ui.btnCInsertRow.setIcon(QtGui.QIcon("insert_row.png"))
+        self.ui.btnCUpdateRow.setIcon(QtGui.QIcon("update_row.png"))
+
+        # Check if command line arguments has files in it
+        if sys.argv[1:]:
+            self.loopItems(sys.argv[1:])
+
         # Load settings
-        settings = QtCore.QSettings("bulkware", "bwReplacer")
-        if settings.contains("database"):
-            file = settings.value("database")
-
-            # Try to connect to the database
-            ok = self.data.open(file)
-            if ok:
-                self.refreshLists()
-                self.refreshLLists()
-                self.refreshCCorrections()
-                self.enableWidgets()
-                msg = "Successfully connected to database: " + str(file)
-                self.ui.statusBar.showMessage(msg)
-            else:
-                msg = "Unable to connect to previous database."
-                self.ui.statusBar.showMessage(msg)
-
-        # Load setting: encoding
-        if settings.contains("encoding"):
-            self.ui.cboSFileEncoding.setCurrentIndex(settings.value("encoding",
-                type=int))
-
-        # Load setting: file
-        if settings.contains("filepath"):
-            self.filepath = settings.value("filepath", type=str)
-            self.openFile(self.filepath)
-
-        # Load setting: path
-        if settings.contains("dirpath"):
-            self.dirpath = settings.value("dirpath", type=str)
-            self.openDir(self.dirpath)
+        self.loadSettings()
 
 
-    # Menu > File > Quit
-    def quitApplication(self):
-        QtGui.QApplication.quit()
-
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #+ Actions
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
     # Menu > File > Create a new database...
     def createDatabase(self):
@@ -211,22 +198,28 @@ class Main(QtGui.QMainWindow):
         self.enableWidgets()
 
 
-    # Menu > File > Open database...
-    def openDatabase(self):
+    # Menu > File > Open database... (using message box)
+    def openDatabaseMsgBox(self):
 
         # Get the database file using a dialog
-        file = QtGui.QFileDialog.getOpenFileName(self, "Open database",
+        fp = QtGui.QFileDialog.getOpenFileName(self, "Open database",
             os.path.dirname(sys.argv[0]), "SQLite databases (*.db)")
 
         # If the filename was not provided
-        if file == "":
+        if fp == "":
             return
+
+        self.openDatabase(fp)
+
+
+    # Open database
+    def openDatabase(self, fp):
 
         # Disable widgets
         self.disableWidgets()
 
         # Try to open database
-        if not self.data.open(file):
+        if not self.data.open(fp):
             self.ui.statusBar.showMessage(self.data.error)
             QtGui.QMessageBox.critical(self, "Error", self.data.error)
             return
@@ -240,8 +233,13 @@ class Main(QtGui.QMainWindow):
         self.enableWidgets()
 
         # Show success msg
-        msg = "Successfully opened database: " + file
+        msg = "Successfully opened database: " + fp
         self.ui.statusBar.showMessage(msg)
+
+
+    # Menu > File > Quit
+    def quitApplication(self):
+        QtGui.QApplication.quit()
 
 
     # Menu > Help > Wiki
@@ -253,7 +251,7 @@ class Main(QtGui.QMainWindow):
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.01<br />
+        Version 1.1.0<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -262,163 +260,154 @@ class Main(QtGui.QMainWindow):
         QtGui.QMessageBox.about(self, "About", msg)
 
 
-    # Fix, open file
-    def fOpenFile(self):
+    # Add files
+    def fAddFiles(self):
 
-        # Get file using a dialog
-        file = QtGui.QFileDialog.getOpenFileName(self, "Select file",
-            self.filepath, self.typefilter)
+        # Get file list using a dialog
+        items = QtGui.QFileDialog.getOpenFileNames(self, "Add files",
+            self.path)
 
-        # Check if file string is not empty
-        if file == "":
+        # Check list for items
+        if len(items) < 1:
             return
 
-        ok = self.openFile(file)
-        if ok:
-            msg = "File opened successfully."
-            self.ui.statusBar.showMessage(msg)
+        # Loop items to main file list
+        self.loopItems(items)
+
+
+    # Add folder
+    def fAddFolder(self):
+
+        # Get folder using a dialog
+        path = QtGui.QFileDialog.getExistingDirectory(self, "Add folder",
+            self.path)
+
+        # Check path
+        if path == "":
+            return
+
+        # Check dir
+        if not os.path.isdir(path):
+            return
+
+        # Create a list with full paths
+        items = []
+        for item in os.listdir(path):
+            items.append(os.path.join(path, item))
+
+        # Loop items to main file list
+        self.loopItems(items)
+
+
+    # Fix, loop items to main file list
+    def loopItems(self, items):
+
+        nonexist = 0
+        duplicates = 0
+        folders = 0
+        unallowed = 0
+        for item in items:
+
+            # Check if item does not exist
+            if not os.path.exists(item):
+                nonexist += 1
+                continue
+
+            # Check for duplicates
+            if item in self.filelist:
+                duplicates += 1
+                continue
+
+            # Check for folders
+            if os.path.isdir(item):
+                folders += 1
+                continue
+
+            # Check for extension
+            ext = os.path.splitext(item)[1][1:].lower()
+            if ext not in self.filetypes:
+                unallowed += 1
+                continue
+
+            # Check if file path is an existing regular file
+            if not os.path.isfile(item):
+                continue
+
+            # Set the path from first file
+            if item == items[0]:
+                self.path = os.path.split(item)[0]
+
+            # Add file
+            self.filelist.append(item)
+
+        # Check for files, sort them, enable widgets
+        if len(self.filelist) > 0:
+            self.filelist.sort()
+            self.enableFixWidgets()
         else:
-            self.ui.statusBar.showMessage(self.file.error)
-            QtGui.QMessageBox.critical(self, "Error", self.file.error)
+            self.disableFixWidgets()
+
+        # Refresh file list table
+        self.refreshFileList()
+
+        # Count total adds and message user, if necessary
+        total = nonexist
+        total += duplicates
+        total += folders
+        total += unallowed
+        if total > 0:
+            msg = "%s items were skipped:\n" % (total)
+            msg += "\n"
+            msg += "%s doesn't exist\n" % (nonexist)
+            msg += "%s duplicates\n" % (duplicates)
+            msg += "%s folders\n" % (folders)
+            msg += "%s unallowed extensions\n" % (unallowed)
+            QtGui.QMessageBox.information(self, "Info", msg)
 
 
-    # Open file
-    def openFile(self, file):
+    # Fix, clear list
+    def fClearList(self):
+        self.filelist[:] = []
+        self.disableFixWidgets()
+        self.refreshFileList()
 
-        # Get the file encoding setting
-        enc = self.encodings[self.ui.cboSFileEncoding.currentIndex()][1]
 
-        # Try to open file
-        ok = self.file.open(file, enc)
-        if not ok:
-            return False
+    # Fix, remove files
+    def fRemoveFiles(self):
 
-        # Put file path into class variable
-        self.filepath = file
+        # Check if file list is empty
+        if len(self.filelist) < 1:
+            msg = "No files in list."
+            QtGui.QMessageBox.critical(self, "Error", msg)
+            return
 
-        # Put file data into widgets
-        self.ui.txtFFile.setText(self.filepath)
-        self.ui.lstFFileContents.clear()
-        for key, value in self.file.get_filedata().items():
-            self.ui.lstFFileContents.addItem(value)
+        # Check table's selected items
+        if not self.ui.tblFFileList.selectedIndexes():
+            msg = "Please select file."
+            QtGui.QMessageBox.critical(self, "Error", msg)
+            return
 
-        # Everything went well
-        self.file.close()
-        return True
+        # Get indexes from table
+        rows = []
+        for item in self.ui.tblFFileList.selectedIndexes():
+            index = int(item.row())
+            if index not in rows:
+                rows.append(index)
+
+        # Remove items in reverse order (so the indexes won't change)
+        for index in sorted(rows, reverse=True):
+            del self.filelist[index]
+
+        # Check file list for files
+        if len(self.filelist) < 1:
+            self.disableFixWidgets()
+
+        # Refresh table
+        self.refreshFileList()
 
 
     # Fix, start
     def fStart(self):
-
-        # Check for database
-        if not self.data.database:
-            msg = "Database connection not established."
-            QtGui.QMessageBox.critical(self, "Error", msg)
-            return
-
-        # Create a list of selected lists
-        lists = []
-        for sel in range(self.ui.lstFLists.count()):
-            if self.ui.lstFLists.item(sel).checkState():
-                lists.append(self.data.get_list(index=sel)[0])
-
-        # Check for lists
-        if not lists:
-            msg = "No lists defined."
-            self.ui.statusBar.showMessage(msg)
-            QtGui.QMessageBox.critical(self, "Error", msg)
-            return
-
-        # Get corrections
-        corrections = self.data.get_corrections([1,2,3], lists)
-
-        # Check for corrections
-        if not corrections:
-            msg = "No corrections to apply."
-            self.ui.statusBar.showMessage(msg)
-            QtGui.QMessageBox.critical(self, "Error", msg)
-            return False
-
-        # Disable widgets
-        self.disableWidgets()
-
-        # Fix file
-        self.string.reset()
-        ok, msg = self.fixFile(self.filepath, corrections)
-        if ok:
-            self.ui.statusBar.showMessage(msg)
-        else:
-            self.ui.statusBar.showMessage(msg)
-            QtGui.QMessageBox.critical(self, "Error", msg)
-
-        # Show statistics if processing went ok
-        if ok:
-            msg = "Processing finished. %s corrections were applied." % \
-                (self.string.count)
-            self.ui.statusBar.showMessage(msg)
-
-        # Reload file
-        ok = self.openFile(self.filepath)
-        if not ok:
-            self.ui.statusBar.showMessage(self.file.error)
-            QtGui.QMessageBox.critical(self, "Error", self.file.error)
-
-        # Enable widgets
-        self.enableWidgets()
-
-
-    # Batch fix, Select directory...
-    def bfOpenDir(self):
-
-        # Get directory using a dialog
-        path = QtGui.QFileDialog.getExistingDirectory(self, \
-            "Select directory", self.dirpath)
-
-        # Check if path string is empty
-        if path == "":
-            return
-
-        ok = self.openDir(path)
-        if ok and self.filelist:
-            msg = "Directory opened successfully."
-            self.ui.statusBar.showMessage(msg)
-        elif ok and not self.filelist:
-            msg = "No files found from directory."
-            self.ui.statusBar.showMessage(msg)
-            QtGui.QMessageBox.critical(self, "Error", msg)
-        else:
-            msg = "Unable to open directory."
-            self.ui.statusBar.showMessage(msg)
-            QtGui.QMessageBox.critical(self, "Error", msg)
-
-
-    # Open dir
-    def openDir(self, path):
-
-        # Check if path is indeed a directory and create filelist
-        if not os.path.isdir(path):
-            return False
-
-        # Put path into class variable
-        self.dirpath = path
-
-        # Put dir data into widgets
-        self.ui.txtBFDir.setText(self.dirpath)
-        self.ui.lstBFFileList.clear()
-        self.filelist = []
-        for item in os.listdir(self.dirpath):
-            file = os.path.join(self.dirpath, item)
-            ext = os.path.splitext(item)[1][1:].lower()
-            if os.path.isfile(file) and ext in self.filetypes:
-                self.filelist.append(file)
-                self.ui.lstBFFileList.addItem(item)
-
-        # Everything went well
-        return True
-
-
-    # Batch fix, start
-    def bfStart(self):
 
         # Check for database
         if not self.data.database:
@@ -527,6 +516,117 @@ class Main(QtGui.QMainWindow):
         return True, "File processed successfully: " + file
 
 
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #+ Events
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    # Drag
+    def dragEnterEvent(self, event):
+        if (event.type() == QtCore.QEvent.DragEnter):
+            if event.mimeData().hasUrls():
+                event.accept()
+            else:
+                event.ignore()
+
+    # Drop
+    def dropEvent(self, event):
+        if (event.type() == QtCore.QEvent.Drop):
+            if event.mimeData().hasUrls():
+
+                # Make a list of items from drag-and-drop
+                items = []
+                for i in event.mimeData().urls():
+                    items.append(i.toLocalFile())
+
+                # Loop items to main file list
+                self.loopItems(items)
+
+
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #+ Settings
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    def loadSettings(self):
+        try:
+            settings = QtCore.QSettings("bulkware", "bwReplacer")
+            if settings.contains("geometry"): # Window geometry
+                self.restoreGeometry(settings.value("geometry"))
+            if settings.contains("state"): # Window state
+                self.restoreState(settings.value("state"))
+            if settings.contains("database"): # Database
+                dbpath = str(settings.value("database", type=str))
+                self.openDatabase(dbpath)
+            if settings.contains("encoding"): # Encoding
+                encindex = settings.value("encoding", type=int)
+                self.ui.cboSFileEncoding.setCurrentIndex(encindex)
+            if settings.contains("path"): # Fix, path
+                self.path = settings.value("path", type=str)
+        except:
+            self.path = ""
+            return False
+        else:
+            return True
+
+
+    # Save settings when closing the application
+    def closeEvent(self, event):
+        settings = QtCore.QSettings("bulkware", "bwReplacer")
+        settings.setValue("geometry", self.saveGeometry())
+        settings.setValue("state", self.saveState())
+        settings.setValue("database", str(self.data.database))
+        settings.setValue("encoding", \
+            int(self.ui.cboSFileEncoding.currentIndex()))
+        settings.setValue("path", str(self.path))
+
+
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #+ Widgets
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    # Fix, refresh file list table
+    def refreshFileList(self):
+
+        # Clear widgets
+        self.ui.tblFFileList.setColumnCount(0)
+        self.ui.tblFFileList.setRowCount(0)
+        self.ui.tblFFileList.clear()
+
+        # Check if file list is empty
+        if len(self.filelist) < 1:
+            return False
+
+        # Set columns and rows
+        self.ui.tblFFileList.setColumnCount(3)
+        self.ui.tblFFileList.setRowCount(len(self.filelist))
+
+        # Set header labels
+        self.ui.tblFFileList.setHorizontalHeaderLabels(["File", "Size", ""])
+
+        # Populate table
+        for i, file in enumerate(self.filelist):
+
+            item = QtGui.QTableWidgetItem(os.path.basename(file))
+            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            self.ui.tblFFileList.setItem(i, 0, item)
+
+            size = functions.convert_bytes(os.path.getsize(file))
+            item = QtGui.QTableWidgetItem(size)
+            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+            self.ui.tblFFileList.setItem(i, 1, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
+            self.ui.tblFFileList.setItem(i, 2, item)
+
+        # Resize columns to contents
+        # setVisible lines are because of QTBUG-9352!
+        self.ui.tblFFileList.setVisible(False)
+        self.ui.tblFFileList.resizeColumnsToContents()
+        self.ui.tblFFileList.setVisible(True)
+
+
     # Refresh widgets with lists
     def refreshLists(self):
 
@@ -537,7 +637,6 @@ class Main(QtGui.QMainWindow):
         # Clear widgets
         self.ui.cboCList.clear()
         self.ui.lstFLists.clear()
-        self.ui.lstBFLists.clear()
 
         # Get lists
         lists = self.data.get_lists()
@@ -552,16 +651,6 @@ class Main(QtGui.QMainWindow):
             # Corrections
             self.ui.cboCList.addItem(list[2])
 
-            # Fix, list
-            item = QtGui.QListWidgetItem(list[2])
-            item.setFlags(QtCore.Qt.ItemIsEnabled |
-                QtCore.Qt.ItemIsUserCheckable)
-            if list[1] == 1:
-                item.setCheckState(QtCore.Qt.Checked)
-            else:
-                item.setCheckState(QtCore.Qt.Unchecked)
-            self.ui.lstFLists.addItem(item)
-
             # Batch fix, list
             item = QtGui.QListWidgetItem(list[2])
             item.setFlags(QtCore.Qt.ItemIsEnabled | 
@@ -570,7 +659,7 @@ class Main(QtGui.QMainWindow):
                 item.setCheckState(QtCore.Qt.Checked)
             else:
                 item.setCheckState(QtCore.Qt.Unchecked)
-            self.ui.lstBFLists.addItem(item)
+            self.ui.lstFLists.addItem(item)
 
 
     # Refresh lists table
@@ -666,6 +755,13 @@ class Main(QtGui.QMainWindow):
 
         # Remove row from table
         self.ui.tblLLists.removeRow(row)
+
+        # Refresh lists
+        self.refreshLists()
+        self.refreshLLists()
+
+        # Refresh the corrections table
+        self.refreshCCorrections()
 
 
     # Insert list
@@ -1051,12 +1147,23 @@ class Main(QtGui.QMainWindow):
             QtGui.QMessageBox.critical(self, "Error", self.data.error)
 
 
+    # Disable fix widgets
+    def disableFixWidgets(self):
+        self.ui.btnFRemoveFiles.setEnabled(False)
+        self.ui.btnFClearList.setEnabled(False)
+        self.ui.btnFStart.setEnabled(False)
+
+
+    # Enable fix widgets
+    def enableFixWidgets(self):
+        self.ui.btnFRemoveFiles.setEnabled(True)
+        self.ui.btnFClearList.setEnabled(True)
+        if self.data.database:
+            self.ui.btnFStart.setEnabled(True)
+
+
     # Disable widgets
     def disableWidgets(self):
-        self.ui.btnFOpenFile.setEnabled(False)
-        self.ui.btnFStart.setEnabled(False)
-        self.ui.btnBFOpenDir.setEnabled(False)
-        self.ui.btnBFStart.setEnabled(False)
         self.ui.btnLDeleteRow.setEnabled(False)
         self.ui.btnLInsertRow.setEnabled(False)
         self.ui.btnLUpdateRow.setEnabled(False)
@@ -1067,27 +1174,12 @@ class Main(QtGui.QMainWindow):
 
     # Enable widgets
     def enableWidgets(self):
-        self.ui.btnFOpenFile.setEnabled(True)
-        self.ui.btnFStart.setEnabled(True)
-        self.ui.btnBFOpenDir.setEnabled(True)
-        self.ui.btnBFStart.setEnabled(True)
         self.ui.btnLDeleteRow.setEnabled(True)
         self.ui.btnLInsertRow.setEnabled(True)
         self.ui.btnLUpdateRow.setEnabled(True)
         self.ui.btnCDeleteRow.setEnabled(True)
         self.ui.btnCInsertRow.setEnabled(True)
         self.ui.btnCUpdateRow.setEnabled(True)
-
-
-    # Closing application
-    def closeEvent(self, event):
-
-        # Save settings
-        settings = QtCore.QSettings("bulkware", "bwReplacer")
-        settings.setValue("database", self.data.database)
-        settings.setValue("encoding", self.ui.cboSFileEncoding.currentIndex())
-        settings.setValue("filepath", self.filepath)
-        settings.setValue("dirpath", self.dirpath)
 
 
 # Creates an application object and begins the event handling loop
