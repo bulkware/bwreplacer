@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sat Apr  5 18:54:08 2014
+# Created: Thu May 29 11:30:24 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -204,6 +204,28 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addItem(spacerItem3, 1, 2, 1, 2)
         self.gridLayout_4.addLayout(self.gridLayout_5, 0, 0, 1, 1)
         self.tabMain.addTab(self.tabCorrections, _fromUtf8(""))
+        self.tabLog = QtGui.QWidget()
+        self.tabLog.setObjectName(_fromUtf8("tabLog"))
+        self.gridLayoutWidget = QtGui.QWidget(self.tabLog)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 10, 761, 491))
+        self.gridLayoutWidget.setObjectName(_fromUtf8("gridLayoutWidget"))
+        self.gridLayout_6 = QtGui.QGridLayout(self.gridLayoutWidget)
+        self.gridLayout_6.setMargin(0)
+        self.gridLayout_6.setObjectName(_fromUtf8("gridLayout_6"))
+        self.btnLClearLog = QtGui.QPushButton(self.gridLayoutWidget)
+        self.btnLClearLog.setMinimumSize(QtCore.QSize(150, 0))
+        self.btnLClearLog.setObjectName(_fromUtf8("btnLClearLog"))
+        self.gridLayout_6.addWidget(self.btnLClearLog, 1, 2, 1, 1)
+        spacerItem4 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_6.addItem(spacerItem4, 1, 1, 1, 1)
+        self.chkLLogFixes = QtGui.QCheckBox(self.gridLayoutWidget)
+        self.chkLLogFixes.setChecked(True)
+        self.chkLLogFixes.setObjectName(_fromUtf8("chkLLogFixes"))
+        self.gridLayout_6.addWidget(self.chkLLogFixes, 1, 0, 1, 1)
+        self.lstLLog = QtGui.QListWidget(self.gridLayoutWidget)
+        self.lstLLog.setObjectName(_fromUtf8("lstLLog"))
+        self.gridLayout_6.addWidget(self.lstLLog, 0, 0, 1, 3)
+        self.tabMain.addTab(self.tabLog, _fromUtf8(""))
         self.tabSettings = QtGui.QWidget()
         self.tabSettings.setObjectName(_fromUtf8("tabSettings"))
         self.lblSFileEncoding = QtGui.QLabel(self.tabSettings)
@@ -290,7 +312,10 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.btnFRemoveFiles, self.btnFClearList)
         MainWindow.setTabOrder(self.btnFClearList, self.btnFStart)
         MainWindow.setTabOrder(self.btnFStart, self.tblLLists)
-        MainWindow.setTabOrder(self.tblLLists, self.cboCCorrectionMode)
+        MainWindow.setTabOrder(self.tblLLists, self.btnLInsertRow)
+        MainWindow.setTabOrder(self.btnLInsertRow, self.btnLDeleteRow)
+        MainWindow.setTabOrder(self.btnLDeleteRow, self.btnLUpdateRow)
+        MainWindow.setTabOrder(self.btnLUpdateRow, self.cboCCorrectionMode)
         MainWindow.setTabOrder(self.cboCCorrectionMode, self.cboCList)
         MainWindow.setTabOrder(self.cboCList, self.tblCCorrections)
         MainWindow.setTabOrder(self.tblCCorrections, self.btnCInsertRow)
@@ -322,6 +347,9 @@ class Ui_MainWindow(object):
         self.btnCUpdateRow.setText(_translate("MainWindow", "Update row", None))
         self.btnCDeleteRow.setText(_translate("MainWindow", "Delete row", None))
         self.tabMain.setTabText(self.tabMain.indexOf(self.tabCorrections), _translate("MainWindow", "Corrections", None))
+        self.btnLClearLog.setText(_translate("MainWindow", "Clear log", None))
+        self.chkLLogFixes.setText(_translate("MainWindow", "Log fixes", None))
+        self.tabMain.setTabText(self.tabMain.indexOf(self.tabLog), _translate("MainWindow", "Log", None))
         self.lblSFileEncoding.setText(_translate("MainWindow", "File encoding", None))
         self.chkSRemoveEmpty.setText(_translate("MainWindow", "Remove empty lines from EOF", None))
         self.tabMain.setTabText(self.tabMain.indexOf(self.tabSettings), _translate("MainWindow", "Settings", None))

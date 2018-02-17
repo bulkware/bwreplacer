@@ -6,6 +6,7 @@
 # Python imports
 import os # Miscellaneous operating system interfaces
 import re # Regular expression operations
+import time # Time access and conversions
 import sys # System-specific parameters and functions
 
 # Import PyQt modules
@@ -106,6 +107,7 @@ class Main(QtGui.QMainWindow):
         self.ui.btnCDeleteRow.clicked.connect(self.cDeleteRow)
         self.ui.btnCInsertRow.clicked.connect(self.cInsertRow)
         self.ui.btnCUpdateRow.clicked.connect(self.cUpdateRow)
+        self.ui.btnLClearLog.clicked.connect(self.lClearLog)
 
         # Connect signals, comboboxes
         self.ui.cboCCorrectionMode.activated.connect(self.refreshCCorrections)
@@ -144,7 +146,8 @@ class Main(QtGui.QMainWindow):
         self.ui.tabMain.setTabIcon(0, QtGui.QIcon("fix.png"))
         self.ui.tabMain.setTabIcon(1, QtGui.QIcon("lists.png"))
         self.ui.tabMain.setTabIcon(2, QtGui.QIcon("corrections.png"))
-        self.ui.tabMain.setTabIcon(3, QtGui.QIcon("settings.png"))
+        self.ui.tabMain.setTabIcon(3, QtGui.QIcon("log.png"))
+        self.ui.tabMain.setTabIcon(4, QtGui.QIcon("settings.png"))
 
         self.ui.btnFAddFiles.setIcon(QtGui.QIcon("add_files.png"))
         self.ui.btnFAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
@@ -158,6 +161,8 @@ class Main(QtGui.QMainWindow):
         self.ui.btnCDeleteRow.setIcon(QtGui.QIcon("delete_row.png"))
         self.ui.btnCInsertRow.setIcon(QtGui.QIcon("insert_row.png"))
         self.ui.btnCUpdateRow.setIcon(QtGui.QIcon("update_row.png"))
+
+        self.ui.btnLClearLog.setIcon(QtGui.QIcon("clear.png"))
 
         # Check if command line arguments has files in it
         if sys.argv[1:]:
@@ -239,6 +244,7 @@ class Main(QtGui.QMainWindow):
         # Show success msg
         msg = "Successfully opened database: " + fp
         self.ui.statusBar.showMessage(msg)
+        self.logMessage(msg)
 
 
     # Menu > File > Quit
@@ -255,7 +261,7 @@ class Main(QtGui.QMainWindow):
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.1.2<br />
+        Version 1.2.0<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
@@ -445,9 +451,13 @@ class Main(QtGui.QMainWindow):
         # Enable/disable widgets
         self.enabledisableWidgets(disable=True)
 
+        # Select the log tab
+        self.ui.tabMain.setCurrentIndex(3)
+
         # Loop file list
         self.string.reset()
         for file in self.filelist:
+            self.logMessage("Processing file: " + os.path.basename(file))
             ok, msg = self.fixFile(file, corrections)
             if ok:
                 self.ui.statusBar.showMessage(msg)
@@ -455,12 +465,15 @@ class Main(QtGui.QMainWindow):
                 self.ui.statusBar.showMessage(msg)
                 QtGui.QMessageBox.critical(self, "Error", msg)
                 break
+            self.logMessage("File processed successfully: " + \
+                os.path.basename(file))
 
         # Show statistics if processing went ok
         if ok:
             msg = "Processing finished. %s corrections were applied." % \
                 (self.string.count)
             self.ui.statusBar.showMessage(msg)
+            self.logMessage(msg)
 
         # Enable/disable widgets
         self.enabledisableWidgets()
@@ -482,6 +495,8 @@ class Main(QtGui.QMainWindow):
         # Loop file's editable data
         for key, line in sorted(self.file.get_editdata().items()):
 
+            oldline = line
+
             # Loop corrections
             for item in corrections:
                 ok, line = self.string.replace(line, int(item[1]), \
@@ -490,9 +505,19 @@ class Main(QtGui.QMainWindow):
                 if not ok:
                     return False, self.string.error
 
-            # Set corrected line back to file
-            self.file.set_line(key, line)
+            # If line has changed...
+            if line != oldline:
 
+                # Set corrected line back to file
+                self.file.set_line(key, line)
+
+                # Log fix
+                if self.ui.chkLLogFixes.isChecked():
+                    msg = "Fixed row " + str(key) + ", " + oldline + " --> " + \
+                        line
+                    self.logMessage(msg)
+
+            # Update statusBar info
             msg = "Processing file: %s (line %s/%s)" \
                 % (os.path.basename(file), key, lines)
             self.ui.statusBar.showMessage(msg)
@@ -517,6 +542,11 @@ class Main(QtGui.QMainWindow):
 
         # All went well
         return True, "File processed successfully: " + file
+
+
+    # Clear log
+    def lClearLog(self):
+        self.ui.lstLLog.clear()
 
 
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1149,6 +1179,12 @@ class Main(QtGui.QMainWindow):
         else:
             self.ui.statusBar.showMessage(self.data.error)
             QtGui.QMessageBox.critical(self, "Error", self.data.error)
+
+
+    # Log message
+    def logMessage(self, msg):
+        self.ui.lstLLog.addItem(time.strftime("%I:%M:%S") + chr(32) + msg)
+        self.ui.lstLLog.scrollToBottom()
 
 
     # Enable/disable widgets
