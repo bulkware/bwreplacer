@@ -1,5 +1,5 @@
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+#-*- coding: utf-8 -*-
 
 """ An application to correct spelling errors from files. """
 
@@ -92,7 +92,6 @@ class Main(QtGui.QMainWindow):
         self.ui.actionClearList.triggered.connect(self.fClearList)
         self.ui.actionStart.triggered.connect(self.fStart)
         self.ui.actionQuit.triggered.connect(self.quitApplication)
-        self.ui.actionWiki.triggered.connect(self.wikiLink)
         self.ui.actionAbout.triggered.connect(self.aboutMessage)
 
         # Connect signals, buttons
@@ -104,6 +103,7 @@ class Main(QtGui.QMainWindow):
         self.ui.btnLDeleteRow.clicked.connect(self.lDeleteRow)
         self.ui.btnLInsertRow.clicked.connect(self.lInsertRow)
         self.ui.btnLUpdateRow.clicked.connect(self.lUpdateRow)
+        self.ui.txtCSearch.returnPressed.connect(self.refreshCCorrections)
         self.ui.btnCDeleteRow.clicked.connect(self.cDeleteRow)
         self.ui.btnCInsertRow.clicked.connect(self.cInsertRow)
         self.ui.btnCUpdateRow.clicked.connect(self.cUpdateRow)
@@ -140,7 +140,6 @@ class Main(QtGui.QMainWindow):
         self.ui.actionClearList.setIcon(QtGui.QIcon("clear.png"))
         self.ui.actionStart.setIcon(QtGui.QIcon("start.png"))
         self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
-        self.ui.actionWiki.setIcon(QtGui.QIcon("url.png"))
         self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
 
         self.ui.tabMain.setTabIcon(0, QtGui.QIcon("fix.png"))
@@ -170,6 +169,51 @@ class Main(QtGui.QMainWindow):
 
         # Load settings
         self.loadSettings()
+
+
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    #+ Settings
+    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    def loadSettings(self):
+        try:
+            settings = QtCore.QSettings("bulkware", "bwReplacer")
+            if settings.contains("geometry"): # Window geometry
+                self.restoreGeometry(settings.value("geometry"))
+            if settings.contains("state"): # Window state
+                self.restoreState(settings.value("state"))
+            if settings.contains("database"): # Database
+                dbpath = str(settings.value("database", type=str))
+                self.openDatabase(dbpath)
+            if settings.contains("logfiles"): # Log files
+                logfiles = settings.value("logfiles", type=bool)
+                self.ui.chkLLogFiles.setChecked(logfiles)
+            if settings.contains("logfixes"): # Log fixes
+                logfixes = settings.value("logfixes", type=bool)
+                self.ui.chkLLogFixes.setChecked(logfixes)
+            if settings.contains("encoding"): # Encoding
+                encindex = settings.value("encoding", type=int)
+                self.ui.cboSFileEncoding.setCurrentIndex(encindex)
+            if settings.contains("path"): # Fix, path
+                self.path = settings.value("path", type=str)
+        except:
+            self.path = ""
+            return False
+        else:
+            return True
+
+
+    # Save settings when closing the application
+    def closeEvent(self, event):
+        settings = QtCore.QSettings("bulkware", "bwReplacer")
+        settings.setValue("geometry", self.saveGeometry())
+        settings.setValue("state", self.saveState())
+        settings.setValue("database", str(self.data.database))
+        settings.setValue("logfiles", self.ui.chkLLogFiles.isChecked())
+        settings.setValue("logfixes", self.ui.chkLLogFixes.isChecked())
+        settings.setValue("encoding", \
+            int(self.ui.cboSFileEncoding.currentIndex()))
+        settings.setValue("path", str(self.path))
 
 
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -252,21 +296,15 @@ class Main(QtGui.QMainWindow):
         QtGui.QApplication.quit()
 
 
-    # Menu > Help > Wiki
-    def wikiLink(self):
-        address = "http://sourceforge.net/p/bwreplacer/wiki/"
-        QtGui.QDesktopServices.openUrl(QtCore.QUrl(address))
-
-
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.2.0<br />
+        Version 1.3.0<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
         <br />
-        <a href="http://sourceforge.net/projects/bwreplacer">SourceForge</a>"""
+        <a href="https://github.com/bulkware/bwreplacer">GitHub</a>"""
         QtGui.QMessageBox.about(self, "About", msg)
 
 
@@ -457,7 +495,9 @@ class Main(QtGui.QMainWindow):
         # Loop file list
         self.string.reset()
         for file in self.filelist:
-            self.logMessage("Processing file: " + os.path.basename(file))
+            if self.ui.chkLLogFiles.isChecked():
+                msg = "Processing file: " + os.path.basename(file)
+                self.logMessage(msg)
             ok, msg = self.fixFile(file, corrections)
             if ok:
                 self.ui.statusBar.showMessage(msg)
@@ -465,8 +505,9 @@ class Main(QtGui.QMainWindow):
                 self.ui.statusBar.showMessage(msg)
                 QtGui.QMessageBox.critical(self, "Error", msg)
                 break
-            self.logMessage("File processed successfully: " + \
-                os.path.basename(file))
+            if self.ui.chkLLogFiles.isChecked():
+                msg = "File processed successfully: " + os.path.basename(file)
+                self.logMessage(msg)
 
         # Show statistics if processing went ok
         if ok:
@@ -576,43 +617,6 @@ class Main(QtGui.QMainWindow):
 
 
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    #+ Settings
-    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-    def loadSettings(self):
-        try:
-            settings = QtCore.QSettings("bulkware", "bwReplacer")
-            if settings.contains("geometry"): # Window geometry
-                self.restoreGeometry(settings.value("geometry"))
-            if settings.contains("state"): # Window state
-                self.restoreState(settings.value("state"))
-            if settings.contains("database"): # Database
-                dbpath = str(settings.value("database", type=str))
-                self.openDatabase(dbpath)
-            if settings.contains("encoding"): # Encoding
-                encindex = settings.value("encoding", type=int)
-                self.ui.cboSFileEncoding.setCurrentIndex(encindex)
-            if settings.contains("path"): # Fix, path
-                self.path = settings.value("path", type=str)
-        except:
-            self.path = ""
-            return False
-        else:
-            return True
-
-
-    # Save settings when closing the application
-    def closeEvent(self, event):
-        settings = QtCore.QSettings("bulkware", "bwReplacer")
-        settings.setValue("geometry", self.saveGeometry())
-        settings.setValue("state", self.saveState())
-        settings.setValue("database", str(self.data.database))
-        settings.setValue("encoding", \
-            int(self.ui.cboSFileEncoding.currentIndex()))
-        settings.setValue("path", str(self.path))
-
-
-    #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     #+ Widgets
     #+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -679,6 +683,7 @@ class Main(QtGui.QMainWindow):
             return
 
         # Set lists to widgets
+        self.ui.cboCList.addItem("All")
         for list in lists:
 
             # Corrections
@@ -894,17 +899,24 @@ class Main(QtGui.QMainWindow):
             return
 
         # Mode
-        modeid = int(self.ui.cboCCorrectionMode.currentIndex()) + 1
-        modetext = str(self.data.correctionmodes[modeid])
+        modeindex = int(self.ui.cboCCorrectionMode.currentIndex())
+        modeid = []
+        if modeindex > 0:
+            modeid = [modeindex]
 
         # List
-        sel = int(self.ui.cboCList.currentIndex())
-        listdata = self.data.get_list(index=sel)
-        listid = int(listdata[0])
-        listtext = str(listdata[2])
+        listindex = int(self.ui.cboCList.currentIndex())
+        listid = []
+        if listindex > 0:
+            listindex -= 1 # "All" option adds one
+            listdata = self.data.get_list(index=listindex)
+            listid = [int(listdata[0])]
+
+        # Search
+        search = str(self.ui.txtCSearch.text())
 
         # Get corrections
-        rows = self.data.get_corrections([modeid], [listid])
+        rows = self.data.get_corrections(modeid, listid, search)
 
         # Check for corrections
         if not rows:
@@ -923,12 +935,16 @@ class Main(QtGui.QMainWindow):
             for column in range(7):
 
                 if column == 0: # ID
-                    text = str(row[column])
+                    text = str(row[0])
                     item = QtGui.QTableWidgetItem(text)
                     item.setFlags(QtCore.Qt.NoItemFlags)
                 elif column == 1: # Mode
+                    modeid = int(row[1])
+                    modetext = str(self.data.correctionmodes[modeid])
                     item = QtGui.QTableWidgetItem(modetext)
                 elif column == 2: # List
+                    listid = int(row[2])
+                    listtext = str(self.data.get_list(id=listid)[2])
                     item = QtGui.QTableWidgetItem(listtext)
                 elif column == 3: # Variations
                     if row[column]:

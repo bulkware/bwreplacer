@@ -16,6 +16,8 @@ class StringHandler(object):
         # Declare variables
         self.count = 0 # Replace operation counter
         self.error = "" # String for errors
+        self.regex1 = r"(?<![-'])(?<=\b)"
+        self.regex2 = r"(?=\b)(?![-'])"
 
 
     # Replace
@@ -52,7 +54,8 @@ class StringHandler(object):
                     self.count += s.count(old)
                     s = s.replace(old, new)
                 elif mode == 3: # Word
-                    s, c = re.subn(r"\b" + re.escape(old) + r"\b", new, s)
+                    s, c = re.subn(self.regex1 + re.escape(old) + self.regex2,\
+                        new, s)
                     self.count += c
 
             # Should text case variations be performed?
@@ -66,7 +69,7 @@ class StringHandler(object):
                     self.count += s.count(oldc)
                     s = s.replace(oldc, new.capitalize())
                 elif mode == 3: # Word
-                    s, c = re.subn(r"\b" + re.escape(oldc) + r"\b", \
+                    s, c = re.subn(self.regex1 + re.escape(oldc) + self.regex2,\
                         new.capitalize(), s)
                     self.count += c
 
@@ -77,7 +80,7 @@ class StringHandler(object):
                     self.count += s.count(oldl)
                     s = s.replace(oldl, new.lower())
                 elif mode == 3: # Word
-                    s, c = re.subn(r"\b" + re.escape(oldl) + r"\b", \
+                    s, c = re.subn(self.regex1 + re.escape(oldl) + self.regex2,\
                         new.lower(), s)
                     self.count += c
 
@@ -88,7 +91,7 @@ class StringHandler(object):
                     self.count += s.count(oldu)
                     s = s.replace(oldu, new.upper())
                 elif mode == 3: # Word
-                    s, c = re.subn(r"\b" + re.escape(oldu) + r"\b", \
+                    s, c = re.subn(self.regex1 + re.escape(oldu) + self.regex2,\
                         new.upper(), s)
                     self.count += c
 

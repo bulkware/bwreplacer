@@ -207,26 +207,34 @@ class DataHandler(object):
 
 
     # Get corrections
-    def get_corrections(self, modes, lists):
+    def get_corrections(self, modes=[], lists=[], search=""):
 
         # Check for database
         if not self.database:
             self.error = "No database opened."
             return False
 
-        # Check for modes
-        if not modes:
-            return
-
-        # Check for lists
-        if not lists:
-            return
-
         try:
-            modes = ",".join(map(str, modes))
-            lists = ",".join(map(str, lists))
-            query = "SELECT * FROM corrections WHERE mode IN (%s) AND \
-                list IN (%s) ORDER BY mode,error" % (modes, lists)
+            query = "SELECT * FROM corrections"
+            useand = False
+            if modes or lists or search:
+                query += " WHERE"
+            if modes:
+                useand = True
+                modes = ",".join(map(str, modes))
+                query += " mode IN (%s)" % (modes)
+            if lists:
+                useand = True
+                if useand:
+                    query += " AND"
+                lists = ",".join(map(str, lists))
+                query += " list IN (%s)" % (lists)
+            if search:
+                if useand:
+                    query += " AND"
+                query += " (error LIKE '%" + search + "%' OR correction LIKE \
+                    '%" + search + "%' OR comment LIKE '%" + search + "%')"
+            query += " ORDER BY mode,error"
             connection = sqlite3.connect(self.database)
             cursor = connection.cursor()
             cursor.execute(query)
@@ -337,6 +345,7 @@ class DataHandler(object):
             return False
         else:
             return True
+
 
     # Update row
     def update(self, table, values):

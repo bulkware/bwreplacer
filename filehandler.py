@@ -184,7 +184,7 @@ class FileHandler(object):
         # Check file extension
         ext = os.path.splitext(file)[1][1:].lower()
         if ext not in self.filetypes:
-            self.error = "Filetype is not valid: " + file
+            self.error = "File type is not valid: " + file
             return False
 
         # Loop through file and set file data into a dictionary

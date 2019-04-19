@@ -9,12 +9,12 @@ ECHO Removing build directory...
 RMDIR /Q /S "build"
 RMDIR /Q /S "build"
 
-ECHO Removing installers directory...
-RMDIR /Q /S "installers"
-RMDIR /Q /S "installers"
+ECHO Removing windows-version directory...
+RMDIR /Q /S "windows-version"
+RMDIR /Q /S "windows-version"
 
-ECHO Creating installers directory...
-MD "installers"
+ECHO Creating windows-version directory...
+MD "windows-version"
 
 ECHO Compiling executable...
 setup.py build
@@ -48,4 +48,5 @@ COPY /Y "finnish-tv.db" "build"
 COPY /Y "gpl.txt" "build"
 COPY /Y "icons.txt" "build"
 COPY /Y "license.txt" "build"
+COPY /Y "README.md" "build"
 COPY /Y "whats_new.txt" "build"

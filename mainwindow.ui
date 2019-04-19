@@ -301,6 +301,12 @@
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string>Insert row</string>
             </property>
@@ -334,6 +340,12 @@
              <size>
               <width>150</width>
               <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="locale">
@@ -374,9 +386,23 @@
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="locale">
              <locale language="English" country="UnitedStates"/>
             </property>
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>All</string>
+             </property>
+            </item>
             <item>
              <property name="text">
               <string>RegEx</string>
@@ -405,6 +431,12 @@
               <height>0</height>
              </size>
             </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string>Update row</string>
             </property>
@@ -419,6 +451,12 @@
              <size>
               <width>150</width>
               <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
              </size>
             </property>
             <property name="text">
@@ -455,7 +493,7 @@
             </attribute>
            </widget>
           </item>
-          <item row="1" column="2" colspan="2">
+          <item row="1" column="3">
            <spacer name="hspcrC1">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -468,6 +506,38 @@
             </property>
            </spacer>
           </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="lblCSearch">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="locale">
+             <locale language="English" country="UnitedStates"/>
+            </property>
+            <property name="text">
+             <string>Search</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="txtCSearch">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>
@@ -476,57 +546,61 @@
        <attribute name="title">
         <string>Log</string>
        </attribute>
-       <widget class="QWidget" name="gridLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>761</width>
-          <height>491</height>
-         </rect>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_6">
-         <item row="1" column="2">
-          <widget class="QPushButton" name="btnLClearLog">
-           <property name="minimumSize">
-            <size>
-             <width>150</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Clear log</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="chkLLogFixes">
-           <property name="text">
-            <string>Log fixes</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" colspan="3">
-          <widget class="QListWidget" name="lstLLog"/>
-         </item>
-        </layout>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="chkLLogFixes">
+            <property name="text">
+             <string>Log fixes</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="btnLClearLog">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Clear log</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="chkLLogFiles">
+            <property name="text">
+             <string>Log files</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="4">
+           <widget class="QListWidget" name="lstLLog"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tabSettings">
        <attribute name="title">
@@ -612,7 +686,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -628,7 +702,6 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionWiki"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuFix">
@@ -647,6 +720,27 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewDatabase"/>
+   <addaction name="actionOpenDatabase"/>
+   <addaction name="actionAddFiles"/>
+   <addaction name="actionAddFolder"/>
+   <addaction name="actionRemoveFiles"/>
+   <addaction name="actionClearList"/>
+   <addaction name="actionQuit"/>
+  </widget>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
@@ -655,11 +749,6 @@
   <action name="actionAbout">
    <property name="text">
     <string>About...</string>
-   </property>
-  </action>
-  <action name="actionWiki">
-   <property name="text">
-    <string>Wiki (online)</string>
    </property>
   </action>
   <action name="actionOpenDatabase">
@@ -740,10 +829,15 @@
   <tabstop>btnLUpdateRow</tabstop>
   <tabstop>cboCCorrectionMode</tabstop>
   <tabstop>cboCList</tabstop>
+  <tabstop>txtCSearch</tabstop>
   <tabstop>tblCCorrections</tabstop>
   <tabstop>btnCInsertRow</tabstop>
   <tabstop>btnCDeleteRow</tabstop>
   <tabstop>btnCUpdateRow</tabstop>
+  <tabstop>lstLLog</tabstop>
+  <tabstop>chkLLogFiles</tabstop>
+  <tabstop>chkLLogFixes</tabstop>
+  <tabstop>btnLClearLog</tabstop>
   <tabstop>cboSFileEncoding</tabstop>
   <tabstop>chkSRemoveEmpty</tabstop>
  </tabstops>
