@@ -644,13 +644,13 @@ class Main(QtGui.QMainWindow):
 
             item = QtGui.QTableWidgetItem(os.path.basename(file))
             item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            item.setTextAlignment(int(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft))
             self.ui.tblFFileList.setItem(i, 0, item)
 
             size = functions.convert_bytes(os.path.getsize(file))
             item = QtGui.QTableWidgetItem(size)
             item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)
-            item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
+            item.setTextAlignment(int(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight))
             self.ui.tblFFileList.setItem(i, 1, item)
 
             item = QtGui.QTableWidgetItem()
