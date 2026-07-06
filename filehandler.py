@@ -62,7 +62,7 @@ class FileHandler(object):
             filedata = {}
 
             # Regular expression to match timecodes
-            timecode = "^\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}\Z"
+            timecode = r"^\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}\Z"
 
             # Loop through filedata-dictionary and discard unwanted lines 
             for key in self.data:
