@@ -9,8 +9,31 @@ import re # Regular expression operations
 import time # Time access and conversions
 import sys # System-specific parameters and functions
 
-# Import PyQt modules
-from PyQt4 import QtCore, QtGui
+# Import PyQt6 modules
+from PyQt6 import QtCore, QtGui, QtWidgets
+
+# The original code uses the Qt4 module layout. Keep the application code
+# readable while mapping those widget names to their PyQt6 locations.
+for _widget_name in (
+        "QApplication", "QCheckBox", "QComboBox", "QFileDialog",
+        "QInputDialog", "QListWidgetItem", "QMainWindow", "QMessageBox",
+        "QTableWidgetItem"):
+    setattr(QtGui, _widget_name, getattr(QtWidgets, _widget_name))
+QtGui.QAbstractItemView = QtWidgets.QAbstractItemView
+
+QtCore.QEvent.DragEnter = QtCore.QEvent.Type.DragEnter
+QtCore.QEvent.Drop = QtCore.QEvent.Type.Drop
+QtCore.Qt.ItemIsEnabled = QtCore.Qt.ItemFlag.ItemIsEnabled
+QtCore.Qt.ItemIsSelectable = QtCore.Qt.ItemFlag.ItemIsSelectable
+QtCore.Qt.ItemIsUserCheckable = QtCore.Qt.ItemFlag.ItemIsUserCheckable
+QtCore.Qt.NoItemFlags = QtCore.Qt.ItemFlag.NoItemFlags
+QtCore.Qt.Checked = QtCore.Qt.CheckState.Checked
+QtCore.Qt.Unchecked = QtCore.Qt.CheckState.Unchecked
+QtCore.Qt.AlignVCenter = QtCore.Qt.AlignmentFlag.AlignVCenter
+QtCore.Qt.AlignLeft = QtCore.Qt.AlignmentFlag.AlignLeft
+QtCore.Qt.AlignRight = QtCore.Qt.AlignmentFlag.AlignRight
+QtGui.QAbstractItemView.EnsureVisible = (
+    QtWidgets.QAbstractItemView.ScrollHint.EnsureVisible)
 
 # Application classes
 from datahandler import DataHandler # A class for easier data access
@@ -258,7 +281,7 @@ class Main(QtGui.QMainWindow):
     def openDatabaseMsgBox(self):
 
         # Get the database file using a dialog
-        fp = QtGui.QFileDialog.getOpenFileName(self, "Open database",
+        fp, _ = QtGui.QFileDialog.getOpenFileName(self, "Open database",
             os.path.dirname(sys.argv[0]), "SQLite databases (*.db)")
 
         # If the filename was not provided
@@ -312,7 +335,7 @@ class Main(QtGui.QMainWindow):
     def fAddFiles(self):
 
         # Get file list using a dialog
-        items = QtGui.QFileDialog.getOpenFileNames(self, "Add files",
+        items, _ = QtGui.QFileDialog.getOpenFileNames(self, "Add files",
             self.path)
 
         # Check list for items
@@ -1264,5 +1287,5 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     window = Main()
     window.show()
-    ret = app.exec_()
+    ret = app.exec()
     sys.exit(ret)
