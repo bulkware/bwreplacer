@@ -209,7 +209,7 @@ on the "Start" button. Now all the corrections you have defined in the
 
 ### Installing dependencies (Debian-based systems)
 Open your terminal application and type:
-`sudo apt install python3 python3-pyqt6`
+`sudo apt install python3 python3-pyside6`
 
 Alternatively, install the project dependency with:
 `python3 -m pip install -r requirements.txt`
