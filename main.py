@@ -9,11 +9,11 @@ import re # Regular expression operations
 import time # Time access and conversions
 import sys # System-specific parameters and functions
 
-# Import PyQt6 modules
-from PyQt6 import QtCore, QtGui, QtWidgets
+# Import PySide6 modules
+from PySide6 import QtCore, QtGui, QtWidgets
 
 # The original code uses the Qt4 module layout. Keep the application code
-# readable while mapping those widget names to their PyQt6 locations.
+# readable while mapping those widget names to their PySide6 locations.
 for _widget_name in (
         "QApplication", "QCheckBox", "QComboBox", "QFileDialog",
         "QInputDialog", "QListWidgetItem", "QMainWindow", "QMessageBox",

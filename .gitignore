@@ -1,0 +1,39 @@
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled extensions
+*.so
+
+# Packaging and build output
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test and coverage output
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Type-checker and linter caches
+.mypy_cache/
+.ruff_cache/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+
+# Project-specific generated files
+versions/
+config.cfg
