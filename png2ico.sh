@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Build a multi-resolution Windows icon so it stays sharp in shell and menu views.
+# ImageMagick starts with the source image and appends each requested size.
 convert icon.png \
     \( -clone 0 -resize 16x16 \) \
     \( -clone 0 -resize 32x32 \) \
