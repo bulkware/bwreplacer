@@ -52,7 +52,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Updated the English TV database.
 - Updated the Finnish TV database.
 
-## [1.1.2] - 2018-02-17
+## [1.1.2] - 2013-03-03
 
 ### Changed
 
@@ -63,7 +63,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed a bug in the regular-expression rules.
 - Fixed a bug with the Start button.
 
-## [1.1.1] - 2018-02-17
+## [1.1.1] - 2013-02-02
 
 ### Added
 
@@ -80,7 +80,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fixed a bug with checkbox selections in tables.
 
-## [1.1.0] - 2018-02-17
+## [1.1.0] - 2013-02-01
 
 ### Added
 
@@ -104,7 +104,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed a bug when deleting a list.
 - Fixed a bug when opening the database from settings.
 
-## [1.0.1] - 2018-02-17
+## [1.0.1] - 2013-01-02
 
 ### Changed
 
@@ -116,7 +116,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Fixed the wiki link.
 
-## [1.0.0] - 2018-02-17
+## [1.0.0] - 2013-01-01
 
 ### Added
 
