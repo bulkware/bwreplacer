@@ -1,6 +1,8 @@
 @ECHO OFF
 CLS
 
+REM Recreate the distributable tree from scratch so stale files cannot ship.
+
 ECHO Removing cache directory...
 RMDIR /Q /S "__pycache__"
 RMDIR /Q /S "__pycache__"

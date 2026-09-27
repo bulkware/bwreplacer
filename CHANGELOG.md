@@ -1,20 +1,32 @@
 # Changelog
 
-All notable changes to bwReplacer will be documented in this file.
+All notable changes to bwReplacer will be documented in this file. The format
+is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
+project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.0]
+## [Unreleased]
+
+## [1.6.0] - 2026-09-27
+
+### Changed
+
+- GitHub Actions CI package building.
+- Packaging system for Debian (.deb) and Red Hat (.rpm) based distros.
+- Renewed the Windows packaging system.
+
+## [1.5.0] - 2026-09-23
 
 ### Changed
 
 - Migrated from PyQt6 into PySide6.
 
-## [1.4.0]
+## [1.4.0] - 2026-09-17
 
 ### Changed
 
 - Migrated from PyQt4 into PyQt6.
 
-## [1.3.0]
+## [1.3.0] - 2019-04-19
 
 ### Added
 
@@ -29,7 +41,7 @@ All notable changes to bwReplacer will be documented in this file.
 - Updated the English TV database.
 - Updated the Finnish TV database.
 
-## [1.2.0]
+## [1.2.0] - 2018-02-17
 
 ### Added
 
@@ -40,7 +52,7 @@ All notable changes to bwReplacer will be documented in this file.
 - Updated the English TV database.
 - Updated the Finnish TV database.
 
-## [1.1.2]
+## [1.1.2] - 2013-03-03
 
 ### Changed
 
@@ -51,7 +63,7 @@ All notable changes to bwReplacer will be documented in this file.
 - Fixed a bug in the regular-expression rules.
 - Fixed a bug with the Start button.
 
-## [1.1.1]
+## [1.1.1] - 2013-02-02
 
 ### Added
 
@@ -68,7 +80,7 @@ All notable changes to bwReplacer will be documented in this file.
 
 - Fixed a bug with checkbox selections in tables.
 
-## [1.1.0]
+## [1.1.0] - 2013-02-01
 
 ### Added
 
@@ -92,7 +104,7 @@ All notable changes to bwReplacer will be documented in this file.
 - Fixed a bug when deleting a list.
 - Fixed a bug when opening the database from settings.
 
-## [1.01]
+## [1.0.1] - 2013-01-02
 
 ### Changed
 
@@ -104,7 +116,7 @@ All notable changes to bwReplacer will be documented in this file.
 
 - Fixed the wiki link.
 
-## [1.00]
+## [1.0.0] - 2013-01-01
 
 ### Added
 

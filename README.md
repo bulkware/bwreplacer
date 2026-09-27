@@ -224,5 +224,10 @@ git clone https://github.com/bulkware/bwreplacer.git
 Enter the application directory using this command:
 `cd bwreplacer`
 
-You can run the application from the source code using this command:
-`python3 main.py`
+You can run the application from the source code with:
+`make run`
+
+## Building packages
+
+The modern build targets match the other Bulkware desktop applications:
+`make build`, `make deb`, `make rpm`, and (on Windows) `make windows`.

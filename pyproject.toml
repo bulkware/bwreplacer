@@ -1,0 +1,104 @@
+# This file is the single packaging authority for Python, Windows, and native
+# package build metadata.
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bwReplacer"
+version = "1.6.0"
+description = "Desktop application for correcting spelling errors in text files."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+license-files = ["license.txt", "gpl.txt"]
+authors = [{ name = "Antti-Pekka Meronen", email = "antice@kapsi.fi" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Text Processing",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = ["PySide6>=6.0"]
+
+[project.scripts]
+bwreplacer = "bwreplacer.main:main"
+
+[project.urls]
+"Bug Reports" = "https://github.com/bulkware/bwreplacer/issues"
+Source = "https://github.com/bulkware/bwreplacer"
+
+[project.optional-dependencies]
+dev = ["coverage>=7.0", "pylint>=3.0"]
+release = ["build>=1.2", "cx-Freeze>=8.6"]
+
+# bwReplacer keeps its historical flat source layout.  Mapping this checkout to
+# a package preserves it while still giving installed builds package resources.
+[tool.setuptools]
+packages = ["bwreplacer"]
+package-dir = { bwreplacer = "." }
+
+[tool.setuptools.package-data]
+bwreplacer = ["*.png", "*.ui", "*.db"]
+
+[[tool.cxfreeze.executables]]
+script = "freeze_entry.py"
+base = "gui"
+target-name = "bwReplacer"
+icon = "icon.ico"
+shortcut-name = "bwReplacer"
+shortcut-dir = "bwReplacerMenu"
+copyright = "Copyright (C) 2026 Bulkware"
+
+[tool.cxfreeze.build_exe]
+build-exe = "build/windows/bwReplacer"
+include-files = [["assets", "assets"]]
+include-msvcr = true
+packages = ["shiboken6"]
+includes = ["zlib"]
+zip-exclude-packages = ["*"]
+
+[tool.cxfreeze.bdist_msi]
+dist-dir = "build/windows/installer"
+product-name = "bwReplacer"
+initial-target-dir = "[LocalAppDataFolder]Programs\\bwReplacer"
+install-icon = "icon.ico"
+launch-on-finish = true
+upgrade-code = "{1C08D7A2-57FA-4EF2-BA41-6E414B1C7AC7}"
+
+[tool.cxfreeze.bdist_msi.data]
+Directory = [
+    ["ProgramMenuFolder", "TARGETDIR", "."],
+    ["bwReplacerMenu", "ProgramMenuFolder", "BWREPL~1|bwReplacer"],
+]
+
+[tool.pylint.main]
+py-version = "3.11"
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint."messages control"]
+disable = [
+    "attribute-defined-outside-init", "bare-except", "c-extension-no-member",
+    "consider-using-dict-items", "consider-using-with",
+    "consider-using-f-string", "consider-using-min-builtin", "dangerous-default-value",
+    "duplicate-code", "inconsistent-return-statements", "invalid-name",
+    "missing-module-docstring", "missing-class-docstring", "missing-function-docstring",
+    "multiple-statements", "no-else-continue", "no-else-return",
+    "possibly-used-before-assignment", "redefined-builtin", "simplifiable-if-statement",
+    "singleton-comparison", "superfluous-parens", "too-few-public-methods",
+    "too-many-arguments", "too-many-branches", "too-many-instance-attributes",
+    "too-many-lines", "too-many-locals", "too-many-positional-arguments",
+    "too-many-public-methods", "too-many-return-statements", "too-many-statements",
+    "trailing-whitespace", "unused-argument", "unused-import", "unused-variable",
+    "useless-object-inheritance", "wrong-import-position",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["bwreplacer"]
+
+[tool.coverage.report]
+show_missing = true

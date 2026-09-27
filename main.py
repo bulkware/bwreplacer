@@ -36,15 +36,17 @@ QtGui.QAbstractItemView.EnsureVisible = (
     QtWidgets.QAbstractItemView.ScrollHint.EnsureVisible)
 
 # Application classes
-from datahandler import DataHandler # A class for easier data access
-from filehandler import FileHandler # A class to handle files
-from stringhandler import StringHandler # A class to perform string operations
+from . import __version__
+from .datahandler import DataHandler # A class for easier data access
+from .filehandler import FileHandler # A class to handle files
+from .stringhandler import StringHandler # A class to perform string operations
 
 # Application functions
-import functions # Useful functions
+from . import functions # Useful functions
 
 # Import mainwindow
-from mainwindow import *
+from .mainwindow import Ui_MainWindow
+from .resources import asset_path
 
 # Create a class for our mainwindow
 class Main(QtGui.QMainWindow):
@@ -153,38 +155,38 @@ class Main(QtGui.QMainWindow):
         self.ui.tabMain.setCurrentIndex(0)
 
         # Icons
-        self.setWindowIcon(QtGui.QIcon("icon.png"))
+        self.setWindowIcon(QtGui.QIcon(asset_path("icon.png")))
 
-        self.ui.actionNewDatabase.setIcon(QtGui.QIcon("new_database.png"))
-        self.ui.actionOpenDatabase.setIcon(QtGui.QIcon("open_database.png"))
-        self.ui.actionAddFiles.setIcon(QtGui.QIcon("add_files.png"))
-        self.ui.actionAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
-        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
-        self.ui.actionClearList.setIcon(QtGui.QIcon("clear.png"))
-        self.ui.actionStart.setIcon(QtGui.QIcon("start.png"))
-        self.ui.actionQuit.setIcon(QtGui.QIcon("quit.png"))
-        self.ui.actionAbout.setIcon(QtGui.QIcon("about.png"))
+        self.ui.actionNewDatabase.setIcon(QtGui.QIcon(asset_path("new_database.png")))
+        self.ui.actionOpenDatabase.setIcon(QtGui.QIcon(asset_path("open_database.png")))
+        self.ui.actionAddFiles.setIcon(QtGui.QIcon(asset_path("add_files.png")))
+        self.ui.actionAddFolder.setIcon(QtGui.QIcon(asset_path("add_folder.png")))
+        self.ui.actionRemoveFiles.setIcon(QtGui.QIcon(asset_path("remove.png")))
+        self.ui.actionClearList.setIcon(QtGui.QIcon(asset_path("clear.png")))
+        self.ui.actionStart.setIcon(QtGui.QIcon(asset_path("start.png")))
+        self.ui.actionQuit.setIcon(QtGui.QIcon(asset_path("quit.png")))
+        self.ui.actionAbout.setIcon(QtGui.QIcon(asset_path("about.png")))
 
-        self.ui.tabMain.setTabIcon(0, QtGui.QIcon("fix.png"))
-        self.ui.tabMain.setTabIcon(1, QtGui.QIcon("lists.png"))
-        self.ui.tabMain.setTabIcon(2, QtGui.QIcon("corrections.png"))
-        self.ui.tabMain.setTabIcon(3, QtGui.QIcon("log.png"))
-        self.ui.tabMain.setTabIcon(4, QtGui.QIcon("settings.png"))
+        self.ui.tabMain.setTabIcon(0, QtGui.QIcon(asset_path("fix.png")))
+        self.ui.tabMain.setTabIcon(1, QtGui.QIcon(asset_path("lists.png")))
+        self.ui.tabMain.setTabIcon(2, QtGui.QIcon(asset_path("corrections.png")))
+        self.ui.tabMain.setTabIcon(3, QtGui.QIcon(asset_path("log.png")))
+        self.ui.tabMain.setTabIcon(4, QtGui.QIcon(asset_path("settings.png")))
 
-        self.ui.btnFAddFiles.setIcon(QtGui.QIcon("add_files.png"))
-        self.ui.btnFAddFolder.setIcon(QtGui.QIcon("add_folder.png"))
-        self.ui.btnFRemoveFiles.setIcon(QtGui.QIcon("remove.png"))
-        self.ui.btnFClearList.setIcon(QtGui.QIcon("clear.png"))
-        self.ui.btnFStart.setIcon(QtGui.QIcon("start.png"))
+        self.ui.btnFAddFiles.setIcon(QtGui.QIcon(asset_path("add_files.png")))
+        self.ui.btnFAddFolder.setIcon(QtGui.QIcon(asset_path("add_folder.png")))
+        self.ui.btnFRemoveFiles.setIcon(QtGui.QIcon(asset_path("remove.png")))
+        self.ui.btnFClearList.setIcon(QtGui.QIcon(asset_path("clear.png")))
+        self.ui.btnFStart.setIcon(QtGui.QIcon(asset_path("start.png")))
 
-        self.ui.btnLDeleteRow.setIcon(QtGui.QIcon("delete_row.png"))
-        self.ui.btnLInsertRow.setIcon(QtGui.QIcon("insert_row.png"))
-        self.ui.btnLUpdateRow.setIcon(QtGui.QIcon("update_row.png"))
-        self.ui.btnCDeleteRow.setIcon(QtGui.QIcon("delete_row.png"))
-        self.ui.btnCInsertRow.setIcon(QtGui.QIcon("insert_row.png"))
-        self.ui.btnCUpdateRow.setIcon(QtGui.QIcon("update_row.png"))
+        self.ui.btnLDeleteRow.setIcon(QtGui.QIcon(asset_path("delete_row.png")))
+        self.ui.btnLInsertRow.setIcon(QtGui.QIcon(asset_path("insert_row.png")))
+        self.ui.btnLUpdateRow.setIcon(QtGui.QIcon(asset_path("update_row.png")))
+        self.ui.btnCDeleteRow.setIcon(QtGui.QIcon(asset_path("delete_row.png")))
+        self.ui.btnCInsertRow.setIcon(QtGui.QIcon(asset_path("insert_row.png")))
+        self.ui.btnCUpdateRow.setIcon(QtGui.QIcon(asset_path("update_row.png")))
 
-        self.ui.btnLClearLog.setIcon(QtGui.QIcon("clear.png"))
+        self.ui.btnLClearLog.setIcon(QtGui.QIcon(asset_path("clear.png")))
 
         # Check if command line arguments has files in it
         if sys.argv[1:]:
@@ -322,12 +324,12 @@ class Main(QtGui.QMainWindow):
     # Menu > Help > About...
     def aboutMessage(self):
         msg = """<strong>bwReplacer</strong><br />
-        Version 1.3.0<br />
+        Version %s<br />
         <br />
         This is free software.<br />
         Released under the General Public License.<br />
         <br />
-        <a href="https://github.com/bulkware/bwreplacer">GitHub</a>"""
+        <a href="https://github.com/bulkware/bwreplacer">GitHub</a>""" % __version__
         QtGui.QMessageBox.about(self, "About", msg)
 
 
@@ -1282,10 +1284,13 @@ class Main(QtGui.QMainWindow):
             self.ui.btnFStart.setEnabled(False)
 
 
-# Creates an application object and begins the event handling loop
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
+def main():
+    """Create the application object and begin the event loop."""
+    app = QtWidgets.QApplication(sys.argv)
     window = Main()
     window.show()
-    ret = app.exec()
-    sys.exit(ret)
+    return app.exec()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
