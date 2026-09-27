@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=bwReplacer
+Comment=Desktop application for correcting spelling errors in text files
+Icon=org.bulkware.bwreplacer
+Exec=bwreplacer %F
+Terminal=false
+Type=Application
+Categories=Utility;TextTools;
+Keywords=text;replace;correction;spelling;
+StartupWMClass=bwReplacer

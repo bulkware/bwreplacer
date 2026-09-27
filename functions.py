@@ -1,5 +1,4 @@
 # !/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # A function to convert bytes into human readable sizes
 def convert_bytes(size):

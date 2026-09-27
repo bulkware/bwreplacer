@@ -1,0 +1,8 @@
+include CHANGELOG.md
+include icons.txt
+include license.txt
+include gpl.txt
+include freeze_entry.py
+include mainwindow.ui
+recursive-include data *
+recursive-include docs *.md

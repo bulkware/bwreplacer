@@ -1,0 +1,7 @@
+bwreplacer (1.6.0-1) unstable; urgency=medium
+
+  * Changed: GitHub Actions CI package building.
+  * Changed: Packaging system for Debian (.deb) and Red Hat (.rpm) based distros.
+  * Changed: Renewed the Windows packaging system.
+
+ -- Antti-Pekka Meronen <antice@kapsi.fi>  Sun, 27 Sep 2026 00:00:00 +0000
